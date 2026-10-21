@@ -40,6 +40,61 @@
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
   .confetti { position: fixed; top: -20px; width: 10px; height: 14px; border-radius: 2px; z-index: 60; pointer-events: none; animation: fall linear forwards; }
 
+  /* přetahování (dvojice, doplňování vět) */
+  .dnd { touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+  .dnd-ghost { position: fixed; z-index: 70; pointer-events: none; opacity: .92; transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 10px 24px rgba(0,0,0,.22); }
+  .dnd-src { opacity: .35; }
+  .dnd-over { outline: 3px solid #38bdf8; outline-offset: 2px; }
+
+  /* doplňování slov do věty */
+  .fill-text { font-size: 1.35rem; line-height: 3.1rem; font-weight: 700; color: #1f2937; }
+  @media (min-width: 640px) { .fill-text { font-size: 1.6rem; line-height: 3.4rem; } }
+  .slot { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; min-width: 96px; min-height: 44px; padding: 2px 12px; margin: 0 4px;
+          border-radius: 12px; border: 2px dashed #cbd5e1; background: #f8fafc; color: #94a3b8; font-weight: 800; transition: background-color .15s, border-color .15s; }
+  .slot.filled { border-style: solid; border-color: #e5e7eb; background: #fff; color: #1f2937; box-shadow: 0 3px 0 #e5e7eb; }
+  .slot.active { border-color: #38bdf8; background: #f0f9ff; }
+  .slot.ok { border-style: solid; border-color: #22c55e; background: #dcfce7; color: #166534; box-shadow: 0 3px 0 #86efac; }
+  .slot.bad { border-style: solid; border-color: #f87171; background: #fef2f2; color: #dc2626; }
+  .slot.reveal { border-style: solid; border-color: #f87171; background: #fff; color: #166534; }
+
+  /* mapa */
+  .map-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 1.5rem; padding: .5rem; }
+  .cz-map { display: block; width: 100%; height: auto; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .cz-map .reg { fill: #dbe4ee; stroke: #fff; stroke-width: 1.8; stroke-linejoin: round; fill-rule: evenodd; transition: fill .15s; }
+  .cz-map .reg.click { cursor: pointer; }
+  .cz-map .reg.click:hover { fill: #bae6fd; }
+  .cz-map .reg.hl { fill: #fbbf24; }
+  .cz-map .reg.ok { fill: #86efac; }
+  .cz-map .reg.bad { fill: #fca5a5; }
+  .cz-map .river { fill: none; stroke: #38bdf8; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+  .cz-map .river.hl { stroke: #f59e0b; stroke-width: 4.5; }
+  .cz-map .river.ok { stroke: #22c55e; stroke-width: 4.5; }
+  .cz-map .river.bad { stroke: #ef4444; stroke-width: 4.5; }
+  .cz-map .river.dim { opacity: .45; }
+  .cz-map .rhit { fill: none; stroke: transparent; stroke-width: 20; pointer-events: stroke; cursor: pointer; }
+  .cz-map .rgrp { cursor: pointer; }
+  .cz-map .rgrp:hover .river { stroke: #0284c7; stroke-width: 4.2; }
+  .cz-map .pt { fill: #334155; stroke: #fff; stroke-width: 2; }
+  .cz-map .pt.peak { fill: #b45309; }
+  .cz-map .pt.range { fill: #7c3aed; }
+  .cz-map .pt.hl { fill: #f59e0b; stroke: #92400e; }
+  .cz-map .pt.ok { fill: #22c55e; stroke: #166534; }
+  .cz-map .pt.bad { fill: #ef4444; stroke: #7f1d1d; }
+  .cz-map .pgrp { cursor: pointer; }
+  .cz-map .phit { fill: transparent; }
+  .cz-map .pgrp:hover .pt { stroke: #0284c7; stroke-width: 3; }
+  .cz-map .lbl { font: 800 12.5px ui-rounded, "Segoe UI", system-ui, sans-serif; fill: #1f2937; paint-order: stroke; stroke: #fff; stroke-width: 3.5px; stroke-linejoin: round; text-anchor: middle; pointer-events: none; }
+  .cz-map .lbl.sm { font-size: 11px; }
+  .cz-map .lbl.rv { fill: #0369a1; }
+  .map-legend { font-size: .8rem; font-weight: 700; color: #9ca3af; text-align: center; margin-top: .25rem; }
+  @media (max-width: 639px) {   /* na telefonu je mapa zmenšená, tak řeky, popisky a čáry zesílíme */
+    .cz-map .reg { stroke-width: 2.6; }
+    .cz-map .river { stroke-width: 4.8; }
+    .cz-map .river.hl, .cz-map .river.ok, .cz-map .river.bad, .cz-map .rgrp:hover .river { stroke-width: 7.5; }
+    .cz-map .rhit { stroke-width: 36; }
+    .cz-map .lbl.sm { font-size: 17px; stroke-width: 5px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .shake, .pop, .sheet, .fade, .bob, .wiggle, .confetti { animation: none !important; }
   }
@@ -61,6 +116,18 @@
              vlastní oddělovač: "joiner": " → " → "correct": "A → B → C"
              "extra": ["are"] = navíc špatné dílky na zmatení
     tip    – výuková karta (mnemotechnika), ukáže se na začátku tématu: "question" = nadpis, "text" = výklad
+    fill   – doplň slova do věty: "text": "Řeka {{Vltava}} teče přes {{Prahu}}.", "extra": ["Labe"] = navíc špatná slova
+             {{správně|špatná1|špatná2}} = špatná slova jen pro toto místo. Slova se dají kliknout nebo přetáhnout.
+    map    – slepá mapa, klikni na správné místo: "map": "cr" (soubor data/maps/cr.json),
+             "layer": "regions" | "rivers" | "points", "target": "jihocesky" (id; nebo seznam),
+             "candidates": [...] = které řeky/body se na mapě zobrazí (jinak všechny stejného druhu)
+
+  Mapa jde přidat i k ostatním typům (abcd, input, fill, tip):
+    map        – název mapy, např. "cr"
+    highlight  – co zvýraznit: ["regions:jihocesky", "rivers:vltava", "points:brno"]
+    show       – co ještě zobrazit: ["rivers:labe", "points:snezka"] (jinak jen zvýrazněné)
+    labels     – true = popisky názvů krajů (hodí se u typu tip)
+  Mapy jsou v data/maps/*.json (kraje, řeky a body se jmény) – stačí přidat soubor a odkázat se na něj přes "map".
 
   Další pole:
     id          – unikátní; prefix cj_/cz_, aj_/en_, m_/ma_, prv_ určí předmět, pokud chybí "subject"
@@ -377,110 +444,124 @@
 
 <!--
   VTIPY ZA ODMĚNU – "q" = otázka/začátek, "a" = pointa (může chybět).
-  Další vtipy jde přidat i v questions.json jako pole "jokes".
+  Vtip se ukáže na konci bloku 10 a více úkolů, když dítě odpovědělo napoprvé správně aspoň na 90 % z nich.
+  Oprava chyb vtip nespouští. Stejné vtipy se neopakují, dokud se nevystřídají všechny.
+  Další vtipy jde přidat i v questions.json (nebo v libovolné sadě) jako pole "jokes".
 -->
 <script id="joke-data" type="application/json">
 [
-  { "q": "Proč nosí slon červené ponožky?", "a": "Aby se mohl schovat v jahodách. Viděl jsi někdy slona v jahodách? No vidíš – funguje to!" },
-  { "q": "Jak dostaneš slona do ledničky? A jak žirafu?", "a": "Otevřeš ledničku, dáš tam slona a zavřeš. Na žirafu musíš ledničku otevřít, slona vyndat a teprve pak dát dovnitř žirafu." },
-  { "q": "Proč ryby nemluví?", "a": "Zkus si to taky pod vodou!" },
-  { "q": "Co řekla nula osmičce?", "a": "„Ty máš ale pěkný pásek!“" },
-  { "q": "Jak se jmenuje medvěd, který nemá zuby?", "a": "Gumový medvídek." },
-  { "q": "Proč nosí kráva na krku zvonec?", "a": "Protože jí nefunguje houkačka." },
-  { "q": "Potkají se dva šneci. Jeden má na hlavě bouli. „Co se ti stalo?“", "a": "„Předjížděla mě želva.“" },
-  { "q": "Co je zelené a skáče po louce dvakrát rychleji než žába?", "a": "Žába s rozběhem." },
-  { "q": "Co je černobílé a celé červené?", "a": "Zebra, která se stydí." },
-  { "q": "Jak se jmenuje dinosaurus, který tvrdě spí?", "a": "Dinochrápus." },
-  { "q": "Proč ptáci na podzim letí na jih?", "a": "Protože pěšky by to trvalo moc dlouho." },
-  { "q": "Jak poznáš, že byl v ledničce slon?", "a": "Podle stop v másle." },
-  { "q": "Proč má žirafa tak dlouhý krk?", "a": "Aby nemusela čichat ke svým nohám." },
-  { "q": "Ježek se v noci zatoulá na zahradě a narazí do kaktusu.", "a": "„Mami? To jsi ty?“" },
-  { "q": "Co řekne komár, když tě v noci uvidí?", "a": "„Dobrou chuť!“" },
-  { "q": "Proč přešla slepice silnici?", "a": "Aby se dostala na druhou stranu." },
-  { "q": "Která ryba je nejdražší?", "a": "Zlatá rybka." },
-  { "q": "Myšáček se ptá maminky: „Mami, je netopýr náš příbuzný?“", "a": "„Ano, to je strejda, co dělá pilota.“" },
-  { "q": "Učitelka: „Pepíčku, jmenuj pět zvířat, která žijí v Africe.“", "a": "„Dva lvi a tři žirafy.“" },
-  { "q": "„Pepíčku, máš 10 bonbonů a 3 dáš bráchovi. Kolik ti zbude?“", "a": "„Deset. Bráchovi nic nedám.“" },
-  { "q": "„Pepíčku, proč jdeš zase pozdě?“", "a": "„Paní učitelko, vy jste přece říkala, že na učení není nikdy pozdě!“" },
-  { "q": "„Pepíčku, proč píšeš tak malinkými písmenky?“", "a": "„Abych nedělal tak velké chyby.“" },
-  { "q": "Táta: „Proč máš z diktátu pětku?“", "a": "„Protože šestka se nedává.“" },
-  { "q": "„Pepíčku, dej sloveso chodit do budoucího času.“", "a": "„Pojedu autobusem.“" },
-  { "q": "Učitelka: „Který měsíc má 28 dní?“", "a": "Pepíček: „Všechny, paní učitelko!“" },
-  { "q": "„Jaký je rozdíl mezi bleskem a elektřinou?“", "a": "„Za elektřinu se platí.“" },
-  { "q": "„Pepíčku, kdo byl Karel IV.?“", "a": "„Ten, kdo byl ve frontě na trůn čtvrtý.“" },
-  { "q": "Pepíček přiběhne domů: „Mami, dneska jsem jako jediný ze třídy věděl odpověď!“ – „Super! A na jakou otázku?“", "a": "„Kdo rozbil okno.“" },
-  { "q": "„Pepíčku, jak se řekne anglicky pes?“ – „Dog.“ – „A štěně?“", "a": "„Dogíček.“" },
-  { "q": "„Pepíčku, v jedné kapse máš 50 Kč a v druhé 30 Kč. Co máš?“", "a": "„Cizí kalhoty.“" },
-  { "q": "„Pepíčku, co je to sloveso?“", "a": "„To, co dělá maminka, když řekne: Ukliď si pokoj!“" },
-  { "q": "Co je žluté a neumí plavat?", "a": "Bagr. Má totiž jenom jednu ruku." },
-  { "q": "Co má zuby, ale nikdy nekouše?", "a": "Hřeben." },
-  { "q": "Co má krk, ale nemá hlavu?", "a": "Láhev." },
-  { "q": "Co je mokré, i když suší?", "a": "Ručník." },
-  { "q": "Čím víc z toho odebereš, tím je to větší. Co je to?", "a": "Díra." },
-  { "q": "Co má ručičky, ale nikdy netleská?", "a": "Hodiny." },
-  { "q": "Co jde nahoru i dolů, a přitom se ani nehne?", "a": "Schody." },
-  { "q": "Kdo má čtyři nohy, a přitom nikdy nikam nejde?", "a": "Stůl." },
-  { "q": "Co patří tobě, ale ostatní to používají mnohem víc než ty?", "a": "Tvoje jméno." },
-  { "q": "Které slovo je nejdelší na světě?", "a": "Úsměv – táhne se od ucha k uchu." },
-  { "q": "Co udělá rajče, když uvidí salát?", "a": "Zčervená." },
-  { "q": "Proč šel banán k doktorovi?", "a": "Necítil se dobře – celý den ho loupalo." },
-  { "q": "Co řekl talíř druhému talíři?", "a": "„Dneska je večeře na mně!“" },
-  { "q": "Co dělá sněhulák v létě?", "a": "Louži." },
-  { "q": "Co řekl oceán pláži?", "a": "Nic. Jen na ni mávl." },
-  { "q": "Proč je počítač pořád unavený?", "a": "Má otevřených moc oken." },
-  { "q": "Proč šel počítač k doktorovi?", "a": "Chytil virus." },
-  { "q": "Proč kosmonauti nepořádají večírky?", "a": "Ve vesmíru není žádná atmosféra." },
-  { "q": "Proč se kostlivec nikdy nepere?", "a": "Nemá na to žaludek." },
-  { "q": "Proč je učebnice matematiky vždycky smutná?", "a": "Má v sobě spoustu problémů." },
-  { "q": "Co řekla jedna stěna druhé?", "a": "„Sejdeme se v rohu!“" },
-  { "q": "Proč vajíčka nevyprávějí vtipy?", "a": "Puklo by smíchy." },
-  { "q": "Proč včely bzučí?", "a": "Protože neznají slova té písničky." },
-  { "q": "Co říká semafor, když se na něj díváš?", "a": "„Nekoukej, já se převlékám!“" },
-  { "q": "Která zelenina je nejsmutnější?", "a": "Cibule. U ní pláče každý." },
-  { "q": "Proč citron zastavil uprostřed silnice?", "a": "Došla mu šťáva." },
-  { "q": "Jaké jídlo mají nejradši strašidla?", "a": "Bůůchty!" },
-  { "q": "Kam jezdí kočky na prázdniny?", "a": "Na Mňauricius." },
-  { "q": "Kam jezdí pejsci na dovolenou?", "a": "Na Haf-aj." },
-  { "q": "Proč tučňáci nelétají?", "a": "Nemají na letenky." },
-  { "q": "Co dělá krtek, když nemůže usnout?", "a": "Počítá krtiny." },
-  { "q": "Proč nosí zebra pořád pyžamo?", "a": "Ona ho totiž nikdy nesundává!" },
-  { "q": "Proč má velbloud hrby?", "a": "Aby měl kam schovat svačinu na cestu pouští." },
-  { "q": "Proč ryby nehrají basketbal?", "a": "Bojí se sítě." },
-  { "q": "Kdo je nejsilnější v lese?", "a": "Mravenec. Unese mnohem víc, než sám váží!" },
-  { "q": "Proč klokan nikdy neztratí klíče?", "a": "Nosí je pořád v kapse." },
-  { "q": "Proč je chobotnice ve škole tak šikovná?", "a": "Může se hlásit osmi rukama najednou." },
-  { "q": "Proč je pavouk skvělý programátor?", "a": "Umí utkat úžasné webové stránky." },
-  { "q": "Co řekl sněhulák druhému sněhulákovi?", "a": "„Necítíš tady mrkev?“" },
-  { "q": "„Tati, je pravda, že mrkev je dobrá na oči?“", "a": "„Viděl jsi někdy zajíce s brýlemi?“" },
-  { "q": "„Tati, pomůžeš mi s domácím úkolem?“ – „Nemůžu, to by nebylo správné.“", "a": "„Já vím, ale aspoň to zkus!“" },
-  { "q": "„Tati, kde jsou Alpy?“", "a": "„Zeptej se mámy, ta všechno uklízí.“" },
-  { "q": "„Mami, můžu jít ven?“ – „S těma děravýma ponožkama?“", "a": "„Ne, s Frantou a Pepou.“" },
-  { "q": "„Tati, umíš psát potmě?“ – „Myslím, že jo.“", "a": "„Tak zhasni a podepiš mi žákovskou.“" },
-  { "q": "„Mami, ušetřil jsem 30 korun! Běžel jsem domů za autobusem.“", "a": "„A proč jsi neběžel za taxíkem? Ušetřil bys tři stovky!“" },
-  { "q": "„Proč ti nejde zeměpis?“", "a": "„Paní učitelka se pořád ptá na místa, kde jsem nikdy nebyl.“" },
-  { "q": "„Pane doktore, mám pocit, že jsem pes.“ – „A odkdy?“", "a": "„Odmalička. Od štěněte.“" },
-  { "q": "„Pane doktore, nikdo si mě nevšímá.“", "a": "„Další, prosím!“" },
-  { "q": "„Tati, proč je moře slané?“", "a": "„Protože v něm plavou slanečci.“" },
-  { "q": "Kde je v Praze nejveselejší čtvrť?", "a": "Na Smíchově." },
-  { "q": "Která můra vůbec nelétá?", "a": "Noční můra." },
-  { "q": "Proč dinosauři nemají mobily?", "a": "Vyhynuli dřív, než stihli nabít baterku." },
-  { "q": "„Pepíčku, jaký je tvůj nejoblíbenější předmět?“", "a": "„Přestávka!“" },
-  { "q": "„Pepíčku, proč neseš do školy žebřík?“", "a": "„Chci jít na vyšší školu.“" },
-  { "q": "„Pepíčku, proč si bereš do vany knížku?“", "a": "„Paní učitelka říkala, ať se ponořím do čtení.“" },
-  { "q": "Kolik vajec můžeš sníst na lačný žaludek?", "a": "Jedno. Pak už nejsi na lačno." },
-  { "q": "Co je těžší: kilo peří, nebo kilo železa?", "a": "Obojí váží přesně kilo!" },
-  { "q": "Kdy má slon osm nohou?", "a": "Když jsou dva." },
-  { "q": "Co roste, když jí, a zhasne, když pije?", "a": "Oheň." },
-  { "q": "Co má hlavu i ocas, ale žádné tělo?", "a": "Mince." },
-  { "q": "Čeho čím víc je, tím míň vidíš?", "a": "Tmy." },
-  { "q": "Co se dá rozbít, i když se toho vůbec nedotkneš?", "a": "Slib." },
-  { "q": "Ráno chodí po čtyřech, v poledne po dvou a večer po třech. Kdo je to?", "a": "Člověk: miminko leze, dospělý chodí a dědeček má hůlku." },
-  { "q": "Učitelka: „Pepíčku, ty spíš?“", "a": "„Ne, jen přemýšlím se zavřenýma očima, aby mě nic nerušilo.“" },
-  { "q": "V muzeu: „Kolik je tomu dinosaurovi let?“ – Průvodce: „75 milionů a 3 roky.“ – „Jak to víte tak přesně?“", "a": "„Když jsem tady před třemi lety začínal, bylo mu 75 milionů.“" },
-  { "q": "„Pepíčku, kde leží Lamanšský průliv?“", "a": "„Já ho nebral, paní učitelko!“" },
-  { "q": "Proč šla mrkev ke kadeřníkovi?", "a": "Potřebovala zastřihnout nať." },
-  { "q": "Jak se jmenuje dinosaurus, který nikdy nezapomene úkol?", "a": "Pamatosaurus." },
-  { "q": "Proč mají matikáři tak rádi dorty?", "a": "Protože jsou plné zlomků." }
+  {"q": "Proč nosí slon červené ponožky?", "a": "Aby se mohl schovat v jahodách. Viděl jsi někdy slona v jahodách? No vidíš – funguje to!"},
+  {"q": "Jak dostaneš slona do ledničky? A jak žirafu?", "a": "Otevřeš ledničku, dáš tam slona a zavřeš. Na žirafu musíš ledničku otevřít, slona vyndat a teprve pak dát dovnitř žirafu."},
+  {"q": "Proč ryby nemluví?", "a": "Zkus si to taky pod vodou!"},
+  {"q": "Co řekla nula osmičce?", "a": "„Ty máš ale pěkný pásek!“"},
+  {"q": "Jak se jmenuje medvěd, který nemá zuby?", "a": "Gumový medvídek."},
+  {"q": "Proč nosí kráva na krku zvonec?", "a": "Protože jí nefunguje houkačka."},
+  {"q": "Potkají se dva šneci. Jeden má na hlavě bouli. „Co se ti stalo?“", "a": "„Předjížděla mě želva.“"},
+  {"q": "Co je zelené a skáče po louce dvakrát rychleji než žába?", "a": "Žába s rozběhem."},
+  {"q": "Co je černobílé a celé červené?", "a": "Zebra, která se stydí."},
+  {"q": "Jak se jmenuje dinosaurus, který tvrdě spí?", "a": "Dinochrápus."},
+  {"q": "Proč ptáci na podzim letí na jih?", "a": "Protože pěšky by to trvalo moc dlouho."},
+  {"q": "Jak poznáš, že byl v ledničce slon?", "a": "Podle stop v másle."},
+  {"q": "Proč má žirafa tak dlouhý krk?", "a": "Aby nemusela čichat ke svým nohám."},
+  {"q": "Ježek se v noci zatoulá na zahradě a narazí do kaktusu.", "a": "„Mami? To jsi ty?“"},
+  {"q": "Co řekne komár, když tě v noci uvidí?", "a": "„Dobrou chuť!“"},
+  {"q": "Proč přešla slepice silnici?", "a": "Aby se dostala na druhou stranu."},
+  {"q": "Která ryba je nejdražší?", "a": "Zlatá rybka."},
+  {"q": "Myšáček se ptá maminky: „Mami, je netopýr náš příbuzný?“", "a": "„Ano, to je strejda, co dělá pilota.“"},
+  {"q": "Učitelka: „Pepíčku, jmenuj pět zvířat, která žijí v Africe.“", "a": "„Dva lvi a tři žirafy.“"},
+  {"q": "„Pepíčku, máš 10 bonbonů a 3 dáš bráchovi. Kolik ti zbude?“", "a": "„Deset. Bráchovi nic nedám.“"},
+  {"q": "„Pepíčku, proč jdeš zase pozdě?“", "a": "„Paní učitelko, vy jste přece říkala, že na učení není nikdy pozdě!“"},
+  {"q": "„Pepíčku, proč píšeš tak malinkými písmenky?“", "a": "„Abych nedělal tak velké chyby.“"},
+  {"q": "Táta: „Proč máš z diktátu pětku?“", "a": "„Protože šestka se nedává.“"},
+  {"q": "„Pepíčku, dej sloveso chodit do budoucího času.“", "a": "„Pojedu autobusem.“"},
+  {"q": "Učitelka: „Který měsíc má 28 dní?“", "a": "Pepíček: „Všechny, paní učitelko!“"},
+  {"q": "„Jaký je rozdíl mezi bleskem a elektřinou?“", "a": "„Za elektřinu se platí.“"},
+  {"q": "Pepíček přiběhne domů: „Mami, dneska jsem jako jediný ze třídy věděl odpověď!“ – „Super! A na jakou otázku?“", "a": "„Kdo rozbil okno.“"},
+  {"q": "„Pepíčku, jak se řekne anglicky pes?“ – „Dog.“ – „A štěně?“", "a": "„Dogíček.“"},
+  {"q": "„Pepíčku, v jedné kapse máš 50 Kč a v druhé 30 Kč. Co máš?“", "a": "„Cizí kalhoty.“"},
+  {"q": "„Pepíčku, co je to sloveso?“", "a": "„To, co dělá maminka, když řekne: Ukliď si pokoj!“"},
+  {"q": "Co má zuby, ale nikdy nekouše?", "a": "Hřeben."},
+  {"q": "Co má krk, ale nemá hlavu?", "a": "Láhev."},
+  {"q": "Co je mokré, i když suší?", "a": "Ručník."},
+  {"q": "Čím víc z toho odebereš, tím je to větší. Co je to?", "a": "Díra."},
+  {"q": "Co má ručičky, ale nikdy netleská?", "a": "Hodiny."},
+  {"q": "Co jde nahoru i dolů, a přitom se ani nehne?", "a": "Schody."},
+  {"q": "Kdo má čtyři nohy, a přitom nikdy nikam nejde?", "a": "Stůl."},
+  {"q": "Co patří tobě, ale ostatní to používají mnohem víc než ty?", "a": "Tvoje jméno."},
+  {"q": "Které slovo je nejdelší na světě?", "a": "Úsměv – táhne se od ucha k uchu."},
+  {"q": "Co udělá rajče, když uvidí salát?", "a": "Zčervená."},
+  {"q": "Proč šel banán k doktorovi?", "a": "Necítil se dobře – celý den ho loupalo."},
+  {"q": "Co řekl talíř druhému talíři?", "a": "„Dneska je večeře na mně!“"},
+  {"q": "Co dělá sněhulák v létě?", "a": "Louži."},
+  {"q": "Proč je počítač pořád unavený?", "a": "Má otevřených moc oken."},
+  {"q": "Proč šel počítač k doktorovi?", "a": "Chytil virus."},
+  {"q": "Proč kosmonauti nepořádají večírky?", "a": "Ve vesmíru není žádná atmosféra."},
+  {"q": "Proč se kostlivec nikdy nepere?", "a": "Nemá na to žaludek."},
+  {"q": "Proč je učebnice matematiky vždycky smutná?", "a": "Má v sobě spoustu problémů."},
+  {"q": "Co řekla jedna stěna druhé?", "a": "„Sejdeme se v rohu!“"},
+  {"q": "Proč vajíčka nevyprávějí vtipy?", "a": "Puklo by smíchy."},
+  {"q": "Proč včely bzučí?", "a": "Protože neznají slova té písničky."},
+  {"q": "Co říká semafor, když se na něj díváš?", "a": "„Nekoukej, já se převlékám!“"},
+  {"q": "Která zelenina je nejsmutnější?", "a": "Cibule. U ní pláče každý."},
+  {"q": "Proč citron zastavil uprostřed silnice?", "a": "Došla mu šťáva."},
+  {"q": "Jaké jídlo mají nejradši strašidla?", "a": "Bůůchty!"},
+  {"q": "Kam jezdí kočky na prázdniny?", "a": "Na Mňauricius."},
+  {"q": "Kam jezdí pejsci na dovolenou?", "a": "Na Haf-aj."},
+  {"q": "Proč tučňáci nelétají?", "a": "Nemají na letenky."},
+  {"q": "Co dělá krtek, když nemůže usnout?", "a": "Počítá krtiny."},
+  {"q": "Proč ryby nehrají basketbal?", "a": "Bojí se sítě."},
+  {"q": "Kdo je nejsilnější v lese?", "a": "Mravenec. Unese mnohem víc, než sám váží!"},
+  {"q": "Proč klokan nikdy neztratí klíče?", "a": "Nosí je pořád v kapse."},
+  {"q": "Proč je chobotnice ve škole tak šikovná?", "a": "Může se hlásit osmi rukama najednou."},
+  {"q": "Proč je pavouk skvělý programátor?", "a": "Umí utkat úžasné webové stránky."},
+  {"q": "Co řekl sněhulák druhému sněhulákovi?", "a": "„Necítíš tady mrkev?“"},
+  {"q": "„Tati, je pravda, že mrkev je dobrá na oči?“", "a": "„Viděl jsi někdy zajíce s brýlemi?“"},
+  {"q": "„Mami, můžu jít ven?“ – „S těma děravýma ponožkama?“", "a": "„Ne, s Frantou a Pepou.“"},
+  {"q": "„Tati, umíš psát potmě?“ – „Myslím, že jo.“", "a": "„Tak zhasni a podepiš mi žákovskou.“"},
+  {"q": "„Mami, ušetřil jsem 30 korun! Běžel jsem domů za autobusem.“", "a": "„A proč jsi neběžel za taxíkem? Ušetřil bys tři stovky!“"},
+  {"q": "„Proč ti nejde zeměpis?“", "a": "„Paní učitelka se pořád ptá na místa, kde jsem nikdy nebyl.“"},
+  {"q": "„Pane doktore, mám pocit, že jsem pes.“ – „A odkdy?“", "a": "„Odmalička. Od štěněte.“"},
+  {"q": "„Pane doktore, nikdo si mě nevšímá.“", "a": "„Další, prosím!“"},
+  {"q": "„Tati, proč je moře slané?“", "a": "„Protože v něm plavou slanečci.“"},
+  {"q": "Kde je v Praze nejveselejší čtvrť?", "a": "Na Smíchově."},
+  {"q": "Která můra vůbec nelétá?", "a": "Noční můra."},
+  {"q": "Proč dinosauři nemají mobily?", "a": "Vyhynuli dřív, než stihli nabít baterku."},
+  {"q": "„Pepíčku, jaký je tvůj nejoblíbenější předmět?“", "a": "„Přestávka!“"},
+  {"q": "„Pepíčku, proč neseš do školy žebřík?“", "a": "„Chci jít na vyšší školu.“"},
+  {"q": "„Pepíčku, proč si bereš do vany knížku?“", "a": "„Paní učitelka říkala, ať se ponořím do čtení.“"},
+  {"q": "Kolik vajec můžeš sníst na lačný žaludek?", "a": "Jedno. Pak už nejsi na lačno."},
+  {"q": "Co je těžší: kilo peří, nebo kilo železa?", "a": "Obojí váží přesně kilo!"},
+  {"q": "Kdy má slon osm nohou?", "a": "Když jsou dva."},
+  {"q": "Co roste, když jí, a zhasne, když pije?", "a": "Oheň."},
+  {"q": "Co má hlavu i ocas, ale žádné tělo?", "a": "Mince."},
+  {"q": "Čeho čím víc je, tím míň vidíš?", "a": "Tmy."},
+  {"q": "Co se dá rozbít, i když se toho vůbec nedotkneš?", "a": "Slib."},
+  {"q": "Ráno chodí po čtyřech, v poledne po dvou a večer po třech. Kdo je to?", "a": "Člověk: miminko leze, dospělý chodí a dědeček má hůlku."},
+  {"q": "Učitelka: „Pepíčku, ty spíš?“", "a": "„Ne, jen přemýšlím se zavřenýma očima, aby mě nic nerušilo.“"},
+  {"q": "V muzeu: „Kolik je tomu dinosaurovi let?“ – Průvodce: „75 milionů a 3 roky.“ – „Jak to víte tak přesně?“", "a": "„Když jsem tady před třemi lety začínal, bylo mu 75 milionů.“"},
+  {"q": "„Pepíčku, kde leží Lamanšský průliv?“", "a": "„Já ho nebral, paní učitelko!“"},
+  {"q": "Proč šla mrkev ke kadeřníkovi?", "a": "Potřebovala zastřihnout nať."},
+  {"q": "Jak se jmenuje dinosaurus, který nikdy nezapomene úkol?", "a": "Pamatosaurus."},
+  {"q": "Proč mají matikáři tak rádi dorty?", "a": "Protože jsou plné zlomků."},
+  {"q": "„Paní učitelko, můžu být potrestán za něco, co jsem neudělal?“ – „Samozřejmě že ne.“", "a": "„To je dobře, já totiž neudělal domácí úkol.“"},
+  {"q": "„Pane vrchní, v mé polévce je moucha!“", "a": "„Neboj, ta toho moc nesní.“"},
+  {"q": "Co je černobílé a točí se v pračce?", "a": "Tučňák, který si chtěl vyprat frak."},
+  {"q": "Co dostaneš, když zkřížíš sněhuláka s upírem?", "a": "Mrazivé kousnutí."},
+  {"q": "Co dostaneš, když zkřížíš ježka a hada?", "a": "Dva metry ostnatého drátu."},
+  {"q": "Proč má kolo dvě kola?", "a": "Protože s jedním by to byla jednokolka."},
+  {"q": "Co se stane, když hodíš červený šátek do Černého moře?", "a": "Namokne."},
+  {"q": "Kolik zvířat od každého druhu vzal Mojžíš na archu?", "a": "Žádné. Archu stavěl Noe."},
+  {"q": "Co můžeš držet v pravé ruce, ale ne v levé?", "a": "Svou levou ruku."},
+  {"q": "Jak se zbavit škytavky?", "a": "Nech se dobře polekat. Bú! – A je to pryč?"},
+  {"q": "Proč jsou hodiny v bance nejrychlejší?", "a": "Protože čas jsou peníze."},
+  {"q": "Proč nosí zahradník v zimě rukavice?", "a": "Aby mu nezmrzly zelené palce."},
+  {"q": "Proč nemá šnek auto?", "a": "Dům už nosí na zádech."},
+  {"q": "Proč je zelí tak chytré?", "a": "Má pořádnou hlavu."},
+  {"q": "Proč je tužka pořád smutná?", "a": "Pořád ji někdo ořezává."},
+  {"q": "Co řekla guma tužce?", "a": "„Já tvoje chyby napravím!“"},
+  {"q": "Proč se hasiči nikdy nehádají?", "a": "Každý spor uhasí."},
+  {"q": "Proč Měsíc nechodí na večeři?", "a": "Je pořád plný."},
+  {"q": "Proč nesvítí hvězdy ve dne?", "a": "Mají noční směnu."}
 ]
 </script>
 
@@ -502,7 +583,11 @@ const SUBJECT_ALIASES = {
   m: 'm', ma: 'm', mat: 'm', math: 'm', matematika: 'm',
   prv: 'prv', cjs: 'prv', svet: 'prv', clovek: 'prv', 'clovek a jeho svet': 'prv',
 };
-const TYPES = ['abcd', 'input', 'pairs', 'order', 'tip'];
+const TYPES = ['abcd', 'input', 'pairs', 'order', 'fill', 'map', 'tip'];
+const LAYERS = ['regions', 'rivers', 'points'];
+const BASE_PACKS = ['data/kraje-cr.json'];   // sady, které se načtou vždy (nezávisle na questions.json)
+const JOKE_BLOCK = 10;                       // vtip je za celý blok aspoň tolika úkolů…
+const JOKE_RATIO = 0.9;                      // …když z nich aspoň 90 % vyšlo napoprvé (9 z 10)
 const GREEN = '#58cc02', GREEN_DARK = '#46a302';
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const MAX_TRIES = 3;                     // po kolika chybách u psaní / skládání ukázat správnou odpověď
@@ -520,7 +605,9 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* plné nebo zakázané úložiště */ } },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} },
 };
-let settings = Object.assign({ sessionLength: 10, sound: true, jokeEvery: 5 }, store.get(KEY.settings, {}));
+let settings = Object.assign({ sessionLength: 10, sound: true, jokes: true }, store.get(KEY.settings, {}));
+if (store.get(KEY.settings, {}).jokeEvery === 0 && store.get(KEY.settings, {}).jokes === undefined) settings.jokes = false; // starší nastavení "vtipy vypnuty"
+delete settings.jokeEvery;
 const saveSettings = () => store.set(KEY.settings, settings);
 
 function loadStats() {
@@ -533,8 +620,8 @@ const saveStats = () => store.set(KEY.stats, stats);
 /* ============================================================
    STAV APLIKACE
    ============================================================ */
-let QUESTIONS = [], JOKES = [];
-let SOURCES = { builtin: 0, files: [], imported: 0 };
+let QUESTIONS = [], JOKES = [], MAPS = {};
+let SOURCES = { builtin: 0, files: [], imported: 0, maps: [], warnings: [] };
 let screen = 'loading', lastScreen = null, currentSubject = null, game = null, modal = null, parentMsg = null;
 const $app = document.getElementById('app');
 
@@ -585,9 +672,42 @@ function normalizeQuestion(raw) {
   q.type = String(q.type || (Array.isArray(q.pairs) ? 'pairs' : Array.isArray(q.options) ? 'abcd' : 'input')).toLowerCase();
   if (!TYPES.includes(q.type)) return null;
   q.topic = q.topic ? String(q.topic) : 'Ostatní';
-  if (!q.question) q.question = q.type === 'pairs' ? 'Spoj, co k sobě patří:' : q.type === 'order' ? 'Slož ve správném pořadí:' : '';
+  if (!q.question) q.question = q.type === 'pairs' ? 'Spoj, co k sobě patří:' : q.type === 'order' ? 'Slož ve správném pořadí:'
+    : q.type === 'fill' ? 'Doplň slova do věty:' : q.type === 'map' ? 'Klikni na správné místo na mapě:' : '';
   if (!q.question) return null;
+
+  // mapa (nepovinná u všech typů, povinná u "map")
+  q.map = q.map ? String(q.map).trim() : '';
+  if (q.map && !/^[\w-]+$/.test(q.map)) return null;
+  const refs = v => (Array.isArray(v) ? v : v ? [v] : []).map(String).filter(x => /^(regions|rivers|points):[^:]+$/.test(x));
+  if (q.map) { q.highlight = refs(q.highlight); q.show = refs(q.show); q.labels = !!q.labels; }
+  else { delete q.map; delete q.highlight; delete q.show; delete q.labels; }
   if (q.type === 'tip') return q;
+
+  if (q.type === 'map') {
+    if (!q.map) return null;
+    q.layer = LAYERS.includes(q.layer) ? q.layer : 'regions';
+    q.target = (Array.isArray(q.target) ? q.target : [q.target]).filter(x => x != null && x !== '').map(String);
+    if (!q.target.length) return null;
+    q.candidates = Array.isArray(q.candidates) && q.candidates.length ? q.candidates.map(String) : null;
+    return q;
+  }
+
+  if (q.type === 'fill') {
+    const src = String(q.text || ''), re = /\{\{(.+?)\}\}/g;
+    q.parts = []; q.blanks = [];
+    let last = 0, m;
+    while ((m = re.exec(src))) {
+      const [answer, ...bad] = m[1].split('|').map(s => s.trim());
+      if (!answer) return null;
+      q.parts.push(src.slice(last, m.index));
+      q.blanks.push({ answer, bad: bad.filter(Boolean) });
+      last = m.index + m[0].length;
+    }
+    q.parts.push(src.slice(last));
+    q.extra = Array.isArray(q.extra) ? q.extra.map(String) : [];
+    return q.blanks.length ? q : null;
+  }
 
   if (q.type === 'pairs') {
     if (!Array.isArray(q.pairs)) return null;
@@ -634,9 +754,10 @@ function stampPack(questions, rank, added) {
 }
 function addJokes(json) {
   if (!json || !Array.isArray(json.jokes)) return;
+  const add = (q, a) => { if (q && !JOKES.some(j => j.q === q)) JOKES.push({ q, a }); };   // stejný vtip se nepřidá dvakrát
   json.jokes.forEach(j => {
-    if (typeof j === 'string' && j.trim()) JOKES.push({ q: j.trim(), a: '' });
-    else if (j && j.q) JOKES.push({ q: String(j.q), a: j.a ? String(j.a) : '' });
+    if (typeof j === 'string') add(j.trim(), '');
+    else if (j && j.q) add(String(j.q), j.a ? String(j.a) : '');
   });
 }
 async function fetchJson(path) {
@@ -649,17 +770,28 @@ async function loadQuestions() {
   const builtin = parseQuestionPack(JSON.parse(document.getElementById('question-data').textContent));
   stampPack(builtin.questions, 0, '');
   try { JOKES = JSON.parse(document.getElementById('joke-data').textContent).filter(j => j && j.q); } catch (e) { JOKES = []; }
-  SOURCES = { builtin: 0, files: [], imported: 0 };
-  const packs = [];
+  SOURCES = { builtin: 0, files: [], imported: 0, maps: [], warnings: [] };
+  const packs = [], embeddedMaps = {};
+  const takeMaps = j => { if (j && j.maps && typeof j.maps === 'object' && !Array.isArray(j.maps)) Object.assign(embeddedMaps, j.maps); };
 
-  // 1) questions.json vedle index.html (+ soubory ze seznamu "files") – funguje na webu, ne při otevření ze souboru
+  // 1) sady z data/ (součást aplikace) a questions.json vedle index.html (+ soubory ze seznamu "files")
+  //    – funguje na webu, ne při otevření ze souboru
   if (/^https?:$/.test(location.protocol)) {
+    const base = await Promise.all(BASE_PACKS.map(f => fetchJson(f).then(j => ({ f, j }), () => ({ f, j: null }))));
+    base.forEach(({ f, j }) => {
+      if (!j) { SOURCES.files.push({ name: f, count: 0, missing: true }); return; }
+      const bp = parseQuestionPack(j);
+      stampPack(bp.questions, 1, (j && j.added) || ((f.match(DATE_RE) || [])[1]) || '');
+      packs.push(bp); addJokes(j); takeMaps(j);
+      SOURCES.files.push({ name: f, count: bp.questions.length, errors: bp.errors });
+    });
+
     let main = null;
     try { main = await fetchJson('questions.json'); } catch (e) { /* soubor neexistuje – nevadí */ }
     if (main) {
       const p = parseQuestionPack(main);
       stampPack(p.questions, 1, (main && main.added) || '');
-      packs.push(p); addJokes(main);
+      packs.push(p); addJokes(main); takeMaps(main);
       if (p.questions.length || !Array.isArray(main.files)) SOURCES.files.push({ name: 'questions.json', count: p.questions.length, errors: p.errors });
       const files = Array.isArray(main.files) ? main.files.map(String) : [];
       const loaded = await Promise.all(files.map(f => fetchJson(f).then(j => ({ f, j }), () => ({ f, j: null }))));
@@ -667,7 +799,7 @@ async function loadQuestions() {
         if (!j) { SOURCES.files.push({ name: f, count: 0, missing: true }); return; }
         const fp = parseQuestionPack(j);
         stampPack(fp.questions, i + 2, (j && j.added) || ((f.match(DATE_RE) || [])[1]) || '');
-        packs.push(fp); addJokes(j);
+        packs.push(fp); addJokes(j); takeMaps(j);
         SOURCES.files.push({ name: f, count: fp.questions.length, errors: fp.errors });
       });
     }
@@ -677,7 +809,7 @@ async function loadQuestions() {
   if (custom) {
     const p = parseQuestionPack(custom);
     stampPack(p.questions, 1000, '');
-    SOURCES.imported = p.questions.length; packs.push(p); addJokes(custom);
+    SOURCES.imported = p.questions.length; packs.push(p); addJokes(custom); takeMaps(custom);
   }
 
   const map = new Map();
@@ -686,6 +818,45 @@ async function loadQuestions() {
   SOURCES.builtin = replace ? 0 : builtin.questions.length;
   packs.forEach(p => p.questions.forEach(q => map.set(q.id, q)));
   QUESTIONS = [...map.values()];
+  await loadMaps(embeddedMaps);
+}
+
+/* Mapy: z pole "maps" v sadě, jinak data/maps/<název>.json. Otázky s chybějící mapou nebo odkazem se vyřadí (a ukážou v rodičovském panelu). */
+function normalizeMap(m) {
+  if (!m || typeof m !== 'object') return null;
+  const obj = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+  const out = { viewBox: /^[\d.\s-]+$/.test(m.viewBox || '') ? m.viewBox : '0 0 800 460', name: m.name || '', regions: obj(m.regions), rivers: obj(m.rivers), points: obj(m.points) };
+  return Object.keys(out.regions).length + Object.keys(out.rivers).length + Object.keys(out.points).length ? out : null;
+}
+async function loadMaps(embedded) {
+  MAPS = {};
+  const names = [...new Set(QUESTIONS.map(q => q.map).filter(Boolean))];
+  await Promise.all(names.map(async n => {
+    let m = embedded[n] || null;
+    if (!m && /^https?:$/.test(location.protocol)) { try { m = await fetchJson(`data/maps/${n}.json`); } catch (e) { /* mapa neexistuje */ } }
+    const nm = normalizeMap(m);
+    if (nm) MAPS[n] = nm;
+    SOURCES.maps.push({ name: n, ok: !!nm });
+  }));
+  QUESTIONS = QUESTIONS.filter(q => {
+    const why = mapProblem(q);
+    if (why) SOURCES.warnings.push(`${q.id}: ${why}`);
+    return !why;
+  });
+}
+function mapProblem(q) {
+  if (!q.map) return '';
+  const m = MAPS[q.map];
+  if (!m) return `chybí mapa "${q.map}"`;
+  for (const ref of [...q.highlight, ...q.show]) {
+    const [layer, id] = ref.split(':');
+    if (!m[layer][id]) return `na mapě není ${ref}`;
+  }
+  if (q.type === 'map') {
+    if (q.target.some(t => !m[q.layer][t])) return `cíl ${q.target.join(', ')} není na mapě (${q.layer})`;
+    if (q.candidates && q.candidates.some(c => !m[q.layer][c])) return `neznámý kandidát na mapě (${q.layer})`;
+  }
+  return '';
 }
 
 /* Témata seřazená od nejnovějších (podle data "added" a pořadí souborů) */
@@ -774,6 +945,7 @@ function nextJoke() {
 function questionLabel(q) {
   let t = plain(q.question).replace(/\n/g, ' ');
   if (q.type === 'pairs') t += ' (' + q.pairs.map(p => p[0]).join(', ') + ')';
+  if (q.type === 'fill') t += ' ' + q.parts.map(plain).join('…').replace(/\s+/g, ' ');
   if (q.code) t += ' ' + q.code.replace(/\s+/g, ' ').replace(/[─]+/g, '').trim();
   return t.slice(0, 160);
 }
@@ -871,7 +1043,7 @@ function newQuestionState() {
   const q = curQ();
   const c = {
     wrong: [], solved: q.type === 'tip', revealed: false, hintShown: false,
-    inputValue: '', msg: '', anim: null, flash: null, enter: true, title: '', reward: false,
+    inputValue: '', msg: '', anim: null, flash: null, enter: true, title: '',
   };
   if (q.type === 'abcd') { c.options = q.shuffle === false ? q.options.slice() : shuffle(q.options); c.disabled = new Set(); }
   if (q.type === 'pairs') {
@@ -885,6 +1057,15 @@ function newQuestionState() {
     while (tiles.length > 1 && n++ < 15 && sh.slice(0, q.words.length).map(x => x.t).join('|') === q.words.join('|')) sh = shuffle(tiles);
     c.tiles = sh; c.chosen = [];
   }
+  if (q.type === 'fill') {
+    // dílky 0..n-1 = správná slova (dílek i patří na místo i), další jsou zmatení
+    const answers = q.blanks.map(b => b.answer);
+    const decoys = q.blanks.flatMap(b => b.bad).concat(q.extra).filter((w, i, a) => a.indexOf(w) === i && !answers.includes(w));
+    c.tiles = shuffle(answers.concat(decoys).map((t, id) => ({ t, id })));
+    c.slots = q.blanks.map(() => null);   // id dílku na daném místě
+    c.locked = new Set(); c.bad = new Set(); c.active = null; c.fails = 0;
+  }
+  if (q.type === 'map') { c.wrongIds = new Set(); c.rightId = null; }
   game.cur = c;
   if (q.type === 'tip') sfx.tip();
 }
@@ -937,6 +1118,117 @@ function tapTile(id) {
 }
 const orderText = (q, c) => c.chosen.map(id => c.tiles.find(t => t.id === id).t).join(q.joiner);
 
+/* --- Doplňování slov do věty --- */
+const fillTile = (c, id) => c.tiles.find(t => t.id === id);
+function placeInSlot(id, i) {                       // dílek id → místo i; slovo, které tam bylo, se vrátí mezi dílky (nebo se prohodí)
+  const c = game.cur;
+  if (c.solved || c.locked.has(i) || id == null) return;
+  const from = c.slots.indexOf(id), old = c.slots[i];
+  if (from >= 0) c.slots[from] = old;
+  c.slots[i] = id; c.active = null; c.msg = '';
+  sfx.tick(); render();
+}
+function tapBankTile(id) {
+  const c = game.cur;
+  if (c.solved || c.slots.includes(id)) return;
+  const free = c.slots.map((s, i) => (s == null && !c.locked.has(i) ? i : -1)).filter(i => i >= 0);
+  const target = c.active != null && !c.locked.has(c.active) ? c.active : free[0];
+  if (target == null) { c.msg = 'Všechna místa jsou plná – klepni na slovo ve větě a vrátí se zpět.'; render(); return; }
+  placeInSlot(id, target);
+}
+function tapSlot(i) {
+  const c = game.cur;
+  if (c.solved || c.locked.has(i)) return;
+  if (c.slots[i] != null) { c.slots[i] = null; c.active = i; }
+  else c.active = c.active === i ? null : i;
+  c.msg = ''; sfx.tick(); render();
+}
+function checkFill() {
+  const c = game.cur, q = curQ();
+  if (c.slots.some(s => s == null)) { c.anim = { type: 'shake' }; c.msg = 'Nejdřív doplň všechna místa 🙂'; render(); return; }
+  const norm = t => String(t).trim().toLocaleLowerCase('cs');
+  const bad = [];
+  c.slots.forEach((id, i) => { if (!c.locked.has(i) && norm(fillTile(c, id).t) !== norm(q.blanks[i].answer)) bad.push(i); });
+  if (!bad.length) { c.solved = true; onSolved(); return; }
+  c.fails++; sfx.wrong();
+  bad.forEach(i => c.wrong.push(fillTile(c, c.slots[i]).t));
+  if (q.hint) c.hintShown = true;
+  if (c.fails >= MAX_TRIES) {
+    c.slots = q.blanks.map((b, i) => i); c.locked = new Set(c.slots);
+    c.solved = true; c.revealed = true; onSolved(); return;
+  }
+  c.slots.forEach((id, i) => { if (!bad.includes(i)) c.locked.add(i); });   // správná slova zůstanou
+  bad.forEach(i => { c.slots[i] = null; });                               // špatná se vrátí mezi dílky
+  c.active = bad[0]; c.anim = { type: 'shake' }; c.msg = pick(TRY_AGAIN);
+  render();
+}
+
+/* --- Slepá mapa --- */
+function clickMap(layer, id) {
+  const c = game.cur, q = curQ();
+  if (!c || c.solved || q.type !== 'map' || layer !== q.layer || c.wrongIds.has(id)) return;
+  if (q.target.includes(id)) { c.rightId = id; c.solved = true; onSolved(); return; }
+  const item = MAPS[q.map][layer][id];
+  c.wrongIds.add(id); c.wrong.push(item.name || id);
+  if (q.hint) c.hintShown = true;
+  sfx.wrong();
+  if (c.wrong.length >= MAX_TRIES) { c.rightId = q.target[0]; c.solved = true; c.revealed = true; onSolved(); return; }
+  c.anim = { type: 'shake' }; c.msg = `${pick(TRY_AGAIN)} (to je ${item.name || id})`;
+  render();
+}
+
+/* --- Přetahování (myš i dotyk): zdroj má data-drag, cíl data-drop --- */
+let drag = null, suppressClick = { id: '', until: 0 };
+function onDrop(src, dst) {
+  const c = game && game.cur;
+  if (!c || c.solved) return;
+  const [sk, sa, sb] = src.split(':'), [dk, da, db] = dst.split(':');
+  if (sk === 'pair' && dk === 'pair') {
+    if (sa === da) return;                                    // dvojice se spojují z různých sloupců
+    c.sel = { side: sa, pos: Number(sb) }; tapPair(da, Number(db));
+  } else if (sk === 'tile' && dk === 'blank') placeInSlot(Number(sa), Number(da));
+  else if (sk === 'blank' && dk === 'blank') placeInSlot(c.slots[Number(sa)], Number(da));
+  else if (sk === 'blank' && dk === 'bank') { c.slots[Number(sa)] = null; c.active = Number(sa); c.msg = ''; sfx.tick(); render(); }
+}
+function endDrag() {
+  if (!drag) return;
+  if (drag.ghost) drag.ghost.remove();
+  drag.el.classList.remove('dnd-src');
+  document.querySelectorAll('.dnd-over').forEach(n => n.classList.remove('dnd-over'));
+  drag = null;
+}
+document.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const el = e.target.closest('[data-drag]');
+  if (!el || el.disabled || screen !== 'game' || !game || !game.cur || game.cur.solved || modal) return;
+  drag = { el, id: el.dataset.drag, x: e.clientX, y: e.clientY, pid: e.pointerId, ghost: null };
+});
+document.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.pid) return;
+  if (!drag.ghost) {
+    if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 10) return;
+    const r = drag.el.getBoundingClientRect(), g = drag.el.cloneNode(true);
+    g.removeAttribute('data-action'); g.removeAttribute('data-drag'); g.removeAttribute('data-drop'); g.classList.add('dnd-ghost');
+    g.style.width = r.width + 'px'; g.style.minHeight = r.height + 'px';
+    document.body.appendChild(g); drag.ghost = g; drag.el.classList.add('dnd-src');
+  }
+  drag.ghost.style.left = e.clientX + 'px'; drag.ghost.style.top = e.clientY + 'px';
+  document.querySelectorAll('.dnd-over').forEach(n => n.classList.remove('dnd-over'));
+  const over = document.elementFromPoint(e.clientX, e.clientY), t = over && over.closest('[data-drop]');
+  if (t && t !== drag.el) t.classList.add('dnd-over');
+  e.preventDefault();
+});
+document.addEventListener('pointerup', e => {
+  if (!drag || e.pointerId !== drag.pid) return;
+  const d = drag, moved = !!d.ghost;
+  const over = moved ? document.elementFromPoint(e.clientX, e.clientY) : null, t = over && over.closest('[data-drop]');
+  endDrag();
+  if (!moved) return;                                         // jen klepnutí – zpracuje ho běžný click
+  suppressClick = { id: d.id, until: Date.now() + 400 };
+  if (t && t.dataset.drop !== d.id) onDrop(d.id, t.dataset.drop);
+});
+document.addEventListener('pointercancel', endDrag);
+
 /* --- Kontrola psaní a skládání --- */
 function normAns(s, q) {
   let t = String(s).normalize('NFC').trim();
@@ -961,6 +1253,7 @@ function isCorrectText(q, val) {
 function checkAnswer() {
   const c = game.cur, q = curQ();
   if (c.solved) return;
+  if (q.type === 'fill') { checkFill(); return; }
   let val;
   if (q.type === 'order') {
     if (!c.chosen.length) { c.anim = { type: 'shake' }; c.msg = 'Nejdřív klepni na dílky dole 🙂'; render(); return; }
@@ -987,9 +1280,16 @@ function onSolved() {
   recordAnswer(q, c.wrong, c.revealed);
   c.title = c.revealed ? 'Nevadí, příště to dáš!' : (first ? pick(PRAISE) : pick(AFTER_FIX));
   c.msg = ''; c.sel = null;
-  c.reward = first && settings.jokeEvery > 0 && JOKES.length > 0 && game.streak % settings.jokeEvery === 0;
-  if (c.revealed) sfx.wrong(); else if (c.reward) sfx.reward(); else sfx.correct();
+  if (c.revealed) sfx.wrong(); else sfx.correct();
   render();
+}
+
+/* Vtip je odměna za celý blok: aspoň JOKE_BLOCK úkolů a z nich aspoň 90 % napoprvé správně.
+   Oprava chyb (vracející se otázky) vtip nespouští, ani jedna opravená odpověď sama o sobě. */
+function jokeBlock(g) { return !g.explicitList && g.topicKey !== 'mistakes' && g.total >= JOKE_BLOCK; }
+function jokeEarned(g) {
+  if (!settings.jokes || !JOKES.length || !jokeBlock(g)) return false;
+  return g.results.length >= g.total && g.results.filter(r => r.first).length / g.total >= JOKE_RATIO;
 }
 
 function nextStep() {
@@ -997,8 +1297,7 @@ function nextStep() {
   game.index++;
   if (game.index >= game.queue.length) {
     endSession(true);
-    const pct = game.total ? game.results.filter(r => r.first).length / game.total : 0;
-    if (settings.jokeEvery > 0 && pct >= 0.7) game.summaryJoke = nextJoke();
+    if (jokeEarned(game)) game.summaryJoke = nextJoke();
     setScreen('summary');
     sfx.finish();
     render();
@@ -1015,7 +1314,7 @@ function ensureHistory() { try { if (!(history.state && history.state.app)) hist
 function setScreen(s) { screen = s; if (s !== 'home' && s !== 'loading') ensureHistory(); }
 window.addEventListener('popstate', () => {
   if (screen === 'home' || screen === 'loading') { if (modal) { modal = null; render(); } return; }
-  if (modal) { if (modal.type === 'joke') { modal = null; ensureHistory(); nextStep(); return; } modal = null; ensureHistory(); render(); return; }
+  if (modal) { modal = null; ensureHistory(); render(); return; }
   if (screen === 'game' && game && !game.ended) { ensureHistory(); modal = { type: 'quit' }; render(); return; }
   if (screen === 'summary') { setScreen('subject'); render(); return; }
   screen = 'home'; render();
@@ -1116,7 +1415,7 @@ function renderHome() {
       <div class="flex gap-2 mt-5 flex-wrap">
         <span class="px-3 py-1.5 rounded-full bg-white border-2 border-gray-200 font-extrabold text-orange-500">🔥 ${streak} ${plural(streak, 'den', 'dny', 'dní')} v řadě</span>
         <span class="px-3 py-1.5 rounded-full bg-white border-2 border-gray-200 font-extrabold text-sky-600">⏱️ dnes ${today} min</span>
-        ${settings.jokeEvery > 0 ? `<span class="px-3 py-1.5 rounded-full bg-white border-2 border-gray-200 font-extrabold text-purple-600">🎁 vtip za ${settings.jokeEvery} v řadě</span>` : ''}
+        ${settings.jokes ? `<span class="px-3 py-1.5 rounded-full bg-white border-2 border-gray-200 font-extrabold text-purple-600">🎁 vtip za ${Math.round(JOKE_BLOCK * JOKE_RATIO)} z ${JOKE_BLOCK} napoprvé</span>` : ''}
       </div>
       <div class="grid grid-cols-2 gap-3 sm:gap-5 mt-6">${tiles}</div>
     </div>
@@ -1135,7 +1434,7 @@ function renderSubject() {
   const topics = getTopics(currentSubject);
   const mistakes = qs.filter(isMistake).length, fresh = qs.filter(isNewQ).length;
   const n = settings.sessionLength;
-  const typeIcons = t => [...new Set(t.qs.map(q => ({ abcd: '🔘', input: '⌨️', pairs: '🔗', order: '🧩' }[q.type])))].join('');
+  const typeIcons = t => [...new Set(t.qs.map(q => ({ abcd: '🔘', input: '⌨️', pairs: '🔗', order: '🧩', fill: '✍️', map: '🗺️' }[q.type])))].join('');
   const topicCards = topics.map((t, i) => {
     const done = t.qs.filter(isMastered).length, pct = Math.round(done / t.qs.length * 100);
     const hasTip = all.some(q => q.type === 'tip' && q.topic === t.name);
@@ -1195,13 +1494,72 @@ function renderSubject() {
 }
 
 /* ---------- Herní obrazovka ---------- */
-function renderMedia(q) {
+function renderMedia(q, c) {
+  if (q.map) return renderMapCard(q, c);
   if (q.imageUrl) {
     return `<div class="mt-5 flex justify-center"><div class="rounded-3xl overflow-hidden border-2 border-gray-200 bg-white w-full max-w-sm aspect-[4/3] flex items-center justify-center">
       <img src="${esc(q.imageUrl)}" alt="${esc(q.imageAlt || '')}" data-fallback="${esc(q.emoji || '🖼️')}" class="w-full h-full object-cover"></div></div>`;
   }
   if (q.emoji) return `<div class="mt-5 flex justify-center"><div class="text-7xl sm:text-8xl leading-none select-none">${esc(q.emoji)}</div></div>`;
   return '';
+}
+
+/* ---------- Mapa (SVG z data/maps/*.json) ---------- */
+const triPath = (x, y, s) => `M${x - s} ${y + s * 0.8}L${x} ${y - s}L${x + s} ${y + s * 0.8}Z`;
+function renderMapCard(q, c) {
+  const m = MAPS[q.map];
+  if (!m) return '';
+  const isMapQ = q.type === 'map';
+  const interactive = isMapQ && c && !c.solved;
+  const reveal = !!(c && c.solved);
+  const ids = (list, layer) => new Set(list.filter(r => r.startsWith(layer + ':')).map(r => r.slice(layer.length + 1)));
+  const HL = { regions: ids(q.highlight, 'regions'), rivers: ids(q.highlight, 'rivers'), points: ids(q.highlight, 'points') };
+  const SH = { rivers: ids(q.show, 'rivers'), points: ids(q.show, 'points') };
+  const shown = layer => {
+    const out = new Set([...HL[layer], ...SH[layer]]);
+    if (isMapQ && q.layer === layer) {
+      if (q.candidates) q.candidates.forEach(i => out.add(i));
+      else { const kind = layer === 'points' ? (m.points[q.target[0]] || {}).kind : null; Object.keys(m[layer]).forEach(i => { if (!kind || m.points[i].kind === kind) out.add(i); }); }
+    }
+    return [...out].filter(i => m[layer][i]);
+  };
+  const state = (layer, id) => {
+    if (isMapQ && q.layer === layer && c) { if (c.rightId === id) return 'ok'; if (c.wrongIds.has(id)) return 'bad'; }
+    return HL[layer].has(id) ? 'hl' : '';
+  };
+  const act = (layer, id) => `data-action="mapclick" data-layer="${layer}" data-id="${esc(id)}"`;
+  const canClick = (layer, st) => interactive && q.layer === layer && st !== 'bad';
+  const k = window.innerWidth < 640 ? 1.7 : 1;      // značky na telefonu zvětšíme
+  const labels = [];
+
+  const regions = Object.entries(m.regions).map(([id, r]) => {
+    const st = state('regions', id), click = canClick('regions', st);
+    if (q.labels || (reveal && (st === 'ok' || st === 'hl'))) labels.push(`<text class="lbl sm" x="${r.cx}" y="${r.cy}">${esc(r.short || r.name)}</text>`);
+    return `<path class="reg${click ? ' click' : ''} ${st}" ${click ? act('regions', id) : ''} d="${esc(r.d)}"/>`;
+  }).join('');
+
+  const rivers = shown('rivers').map(id => {
+    const r = m.rivers[id], st = state('rivers', id), d = esc(r.d);
+    if (reveal || q.type === 'tip') labels.push(`<text class="lbl sm rv" x="${r.lx}" y="${r.ly}">${esc(r.name)}</text>`);
+    return canClick('rivers', st)
+      ? `<g class="rgrp" ${act('rivers', id)}><path class="rhit" d="${d}"/><path class="river ${st}" d="${d}"/></g>`
+      : `<path class="river ${st}" d="${d}"/>`;
+  }).join('');
+
+  const points = shown('points').map(id => {
+    const p = m.points[id], st = state('points', id);
+    const mark = p.kind === 'city' ? `<circle class="pt ${st}" cx="${p.x}" cy="${p.y}" r="${(p.capital ? 6.5 : 5.5) * k}"/>`
+      : `<path class="pt ${p.kind === 'range' ? 'range' : 'peak'} ${st}" d="${triPath(p.x, p.y, (p.kind === 'range' ? 9 : 7) * k)}"/>`;
+    if (reveal || q.type === 'tip') labels.push(`<text class="lbl sm" x="${p.x}" y="${p.y - 11 * k}">${esc(p.name)}</text>`);
+    return canClick('points', st)
+      ? `<g class="pgrp" ${act('points', id)}><circle class="phit" cx="${p.x}" cy="${p.y}" r="${17 * k}"/>${mark}</g>` : mark;
+  }).join('');
+
+  const notes = Object.values(m.regions).filter(r => r.note).map(r => `${r.short || r.name} ${r.note}`);
+  const showNote = notes.length && (q.labels || HL.regions.size || (isMapQ && q.layer === 'regions'));
+  return `<div class="mt-5 map-card mx-auto ${c && c.anim && isMapQ ? 'shake' : ''}" style="max-width:44rem">
+    <svg class="cz-map" viewBox="${esc(m.viewBox)}" role="img" aria-label="${esc(m.name || 'Mapa')}">${regions}${rivers}${points}${labels.join('')}</svg>
+    ${showNote ? `<div class="map-legend">${esc(notes.join(' · '))}</div>` : ''}</div>`;
 }
 
 function renderAbcd(q, c) {
@@ -1230,8 +1588,9 @@ function renderPairs(q, c) {
     if (sel) { cls = 'bg-sky-50 border-sky-400 text-sky-700'; sh = '#7dd3fc'; }
     if (fl && c.flash.ok) { cls = 'bg-green-100 border-green-500 text-green-800'; sh = '#22c55e'; anim = 'pop'; }
     if (fl && !c.flash.ok) { cls = 'bg-red-50 border-red-400 text-red-600'; sh = '#fca5a5'; anim = 'shake'; }
-    return `<button data-action="pair" data-side="${side}" data-pos="${pos}" ${matched || c.solved ? 'disabled' : ''}
-      class="btn3d ${anim} w-full min-h-[60px] rounded-2xl border-2 px-2 sm:px-3 py-3 text-base sm:text-xl font-extrabold text-center leading-tight ${cls}" style="--shadow:${sh}">${esc(it.t)}</button>`;
+    const dnd = matched || c.solved ? '' : `data-drag="pair:${side}:${pos}" data-drop="pair:${side}:${pos}"`;
+    return `<button data-action="pair" data-side="${side}" data-pos="${pos}" ${matched || c.solved ? 'disabled' : dnd}
+      class="btn3d dnd ${anim} w-full min-h-[60px] rounded-2xl border-2 px-2 sm:px-3 py-3 text-base sm:text-xl font-extrabold text-center leading-tight ${cls}" style="--shadow:${sh}">${esc(it.t)}</button>`;
   }).join('');
   const left = q.pairs.length - c.matched.size;
   return `
@@ -1239,7 +1598,7 @@ function renderPairs(q, c) {
       <div class="space-y-3">${col('L', c.left)}</div>
       <div class="space-y-3">${col('R', c.right)}</div>
     </div>
-    <p class="mt-4 text-center text-sm font-bold text-gray-400">${c.solved ? 'Všechny dvojice spojené! 🎉' : `Klepni na jedno slovo a pak na jeho dvojici. Zbývá ${left} ${plural(left, 'dvojice', 'dvojice', 'dvojic')}.`}</p>`;
+    <p class="mt-4 text-center text-sm font-bold text-gray-400">${c.solved ? 'Všechny dvojice spojené! 🎉' : `Klepni na jedno slovo a pak na jeho dvojici, nebo ho přetáhni. Zbývá ${left} ${plural(left, 'dvojice', 'dvojice', 'dvojic')}.`}</p>`;
 }
 
 function renderOrder(q, c) {
@@ -1274,6 +1633,33 @@ function renderInput(q, c, s) {
     ${renderAttempts(c)}`;
 }
 
+function renderFill(q, c) {
+  const slot = i => {
+    const id = c.slots[i], t = id == null ? null : fillTile(c, id);
+    const free = !c.solved && !c.locked.has(i);
+    let cls = 'slot';
+    if (c.solved) cls += c.revealed ? ' reveal' : ' ok';
+    else if (c.locked.has(i)) cls += ' ok';
+    else if (t) cls += ' filled';
+    if (free && c.active === i) cls += ' active';
+    if (free && t) cls += ' dnd';
+    return `<button data-action="blank" data-i="${i}" ${free ? `data-drop="blank:${i}"` : 'disabled'} ${free && t ? `data-drag="blank:${i}"` : ''} class="${cls}">${t ? esc(t.t) : '&nbsp;'}</button>`;
+  };
+  const sentence = q.parts.map((p, i) => rich(p) + (i < q.blanks.length ? slot(i) : '')).join('');
+  const bank = c.tiles.map(t => c.slots.includes(t.id)
+    ? `<span class="px-4 py-2 rounded-xl bg-gray-200 text-lg sm:text-xl font-extrabold text-transparent select-none">${esc(t.t)}</span>`
+    : `<button data-action="bank" data-id="${t.id}" data-drag="tile:${t.id}" ${c.solved ? 'disabled' : ''}
+        class="btn3d dnd rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-lg sm:text-xl font-extrabold text-gray-800" style="--shadow:#e5e7eb">${esc(t.t)}</button>`).join('');
+  const attempts = c.wrong.length ? `<div class="mt-3 flex flex-wrap gap-2 items-center"><span class="text-sm font-bold text-gray-400">Tohle nepasovalo:</span>
+    ${c.wrong.map(w => `<span class="px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-500 font-bold line-through">${esc(w)}</span>`).join('')}
+    ${!c.solved ? `<span class="text-sm font-bold text-gray-400">· pokus ${c.fails + 1} ze ${MAX_TRIES}</span>` : ''}</div>` : '';
+  return `
+    <div class="mt-6 bg-white rounded-3xl border-2 border-gray-200 p-4 sm:p-5 fill-text ${c.anim ? 'shake' : ''}">${sentence}</div>
+    <div data-drop="bank" class="mt-5 min-h-[64px] rounded-2xl border-2 border-dashed border-gray-300 p-3 flex flex-wrap gap-2 justify-center items-center">${bank}</div>
+    <p class="mt-3 text-center text-sm font-bold text-gray-400">Klepni na slovo, nebo ho přetáhni na správné místo ve větě.</p>
+    ${attempts}`;
+}
+
 function renderAttempts(c) {
   if (!c.wrong.length) return '';
   return `<div class="mt-3 flex flex-wrap gap-2 items-center"><span class="text-sm font-bold text-gray-400">Tvoje pokusy:</span>
@@ -1305,6 +1691,7 @@ function renderGame() {
         <div class="text-sm font-extrabold uppercase tracking-wider" style="color:${s.dark}">💡 Trik na zapamatování</div>
         <div class="text-7xl my-4 leading-none">${esc(q.emoji || '💡')}</div>
         <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800">${rich(q.question)}</h2>
+        ${q.map ? `<div class="w-full">${renderMapCard(q, c)}</div>` : ''}
         <div class="mt-5 w-full bg-white rounded-3xl border-2 p-5 sm:p-6 text-lg sm:text-xl text-left leading-relaxed text-gray-700" style="border-color:${s.color}40">${rich(q.text || '')}</div>
       </main>
       ${bottomBar(`<button data-action="next" class="btn3d w-full rounded-2xl py-4 text-xl font-extrabold text-white uppercase tracking-wide" style="background:${s.color};--shadow:${s.dark}">Jasně, jdeme na to! 👉</button>`)}
@@ -1325,13 +1712,15 @@ function renderGame() {
   if (q.type === 'abcd') answers = renderAbcd(q, c);
   else if (q.type === 'pairs') answers = renderPairs(q, c);
   else if (q.type === 'order') answers = renderOrder(q, c);
+  else if (q.type === 'fill') answers = renderFill(q, c);
+  else if (q.type === 'map') answers = '';   // odpovídá se kliknutím do mapy (renderMedia)
   else answers = renderInput(q, c, s);
 
   const msg = c.msg && !c.solved ? `<div class="mt-4 text-center font-extrabold text-red-500 pop">${esc(c.msg)}</div>` : '';
 
   let bottom = '';
   if (!c.solved) {
-    if (q.type === 'input' || q.type === 'order') {
+    if (q.type === 'input' || q.type === 'order' || q.type === 'fill') {
       bottom = bottomBar(`<button data-action="check" class="btn3d w-full rounded-2xl py-4 text-xl font-extrabold text-white uppercase tracking-wide" style="background:${GREEN};--shadow:${GREEN_DARK}">Zkontrolovat</button>`);
     }
   } else {
@@ -1347,7 +1736,7 @@ function renderGame() {
         <h2 class="flex-1 text-2xl sm:text-3xl font-extrabold text-gray-800 leading-snug">${rich(q.question)}</h2>
         ${speakBtn}
       </div>
-      ${renderMedia(q)}
+      ${renderMedia(q, c)}
       ${code}
       ${answers}
       ${msg}
@@ -1366,15 +1755,15 @@ function answerText(q) {
   if (q.type === 'abcd') return q.correct;
   if (q.type === 'pairs') return q.pairs.map(p => `${p[0]} = ${p[1]}`).join(' · ');
   if (q.type === 'order') return q.correct[0];
+  if (q.type === 'fill') return q.parts.map((p, i) => plain(p) + (i < q.blanks.length ? q.blanks[i].answer : '')).join('').replace(/\s+/g, ' ').trim();
+  if (q.type === 'map') { const t = (MAPS[q.map] && MAPS[q.map][q.layer][q.target[0]]) || {}; return t.name || q.target[0]; }
   if (q.type === 'tip') return '';
   return q.correct[0] + (q.unit ? ' ' + q.unit : '');
 }
 
 function feedbackSheet(q, c) {
   const ok = !c.revealed, first = ok && c.wrong.length === 0;
-  const btn = c.reward
-    ? `<button data-action="reward" class="btn3d sm:w-56 w-full rounded-2xl py-4 text-xl font-extrabold text-white uppercase tracking-wide" style="background:#a855f7;--shadow:#7e22ce">Otevřít 🎁</button>`
-    : `<button data-action="next" class="btn3d sm:w-56 w-full rounded-2xl py-4 text-xl font-extrabold text-white uppercase tracking-wide" style="background:${ok ? GREEN : '#ef4444'};--shadow:${ok ? GREEN_DARK : '#b91c1c'}">Pokračovat</button>`;
+  const btn = `<button data-action="next" class="btn3d sm:w-56 w-full rounded-2xl py-4 text-xl font-extrabold text-white uppercase tracking-wide" style="background:${ok ? GREEN : '#ef4444'};--shadow:${ok ? GREEN_DARK : '#b91c1c'}">Pokračovat</button>`;
   return `
   <div class="fixed inset-x-0 bottom-0 z-20 sheet ${ok ? 'bg-green-100' : 'bg-red-100'}" style="padding-bottom:env(safe-area-inset-bottom)">
     <div class="max-w-2xl mx-auto px-4 py-4 sm:py-6 flex flex-col sm:flex-row sm:items-center gap-4">
@@ -1383,8 +1772,7 @@ function feedbackSheet(q, c) {
         <div class="min-w-0">
           <div class="text-2xl font-extrabold ${ok ? 'text-green-700' : 'text-red-700'}">${esc(c.title)}</div>
           ${!ok ? `<div class="font-extrabold text-red-700 mt-1">Správně je: <span class="px-2 py-0.5 bg-white rounded-lg">${esc(answerText(q))}</span></div>` : ''}
-          ${c.reward ? `<div class="font-extrabold text-purple-700 mt-1">🔥 ${game.streak} správně v řadě – máš vtip za odměnu!</div>`
-            : (first && game.streak >= 3 ? `<div class="font-extrabold text-orange-600 mt-1">🔥 ${game.streak} správně v řadě!</div>` : '')}
+          ${first && game.streak >= 3 ? `<div class="font-extrabold text-orange-600 mt-1">🔥 ${game.streak} správně v řadě!</div>` : ''}
           ${q.explanation ? `<div class="mt-1 font-semibold ${ok ? 'text-green-900' : 'text-red-900'}">${rich(q.explanation)}</div>` : ''}
         </div>
       </div>
@@ -1415,7 +1803,8 @@ function renderSummary() {
       <p class="mt-2 text-xl font-extrabold text-gray-800">${esc(j.q)}</p>
       ${j.a ? (g.summaryJokeRevealed ? `<p class="mt-3 text-xl font-extrabold text-purple-700 pop">${esc(j.a)} 😂</p>`
         : `<button data-action="summary-joke" class="btn3d mt-4 rounded-2xl px-6 py-3 font-extrabold text-white" style="background:#a855f7;--shadow:#7e22ce">Prozradit pointu 😄</button>`) : ''}
-    </div>` : '';
+    </div>` : (settings.jokes && JOKES.length && jokeBlock(g) ? `
+    <p class="mt-6 text-center font-bold text-purple-500">🎁 Vtip za odměnu dostaneš, když zvládneš aspoň ${Math.round(JOKE_BLOCK * JOKE_RATIO)} z ${JOKE_BLOCK} úkolů napoprvé.</p>` : '');
   return `
   <div class="min-h-screen max-w-2xl mx-auto px-4 py-8 fade">
     <div class="text-center">
@@ -1435,7 +1824,7 @@ function renderSummary() {
       <div class="mt-3 space-y-2">
         ${missed.map(r => `
           <div class="bg-white rounded-2xl border-2 border-gray-200 p-4">
-            <div class="font-extrabold text-gray-800">${rich(r.q.question)}${r.q.code ? ` <span class="font-mono">${esc(r.q.code.split('\n').slice(0, 2).join(' ').replace(/\s+/g, ' '))}</span>` : ''}</div>
+            <div class="font-extrabold text-gray-800">${rich(r.q.question)}${r.q.type === 'fill' ? `<div class="mt-1 font-bold text-gray-600">${esc(plain(r.q.parts.join('___')).replace(/\s+/g, ' '))}</div>` : ''}${r.q.code ? ` <span class="font-mono">${esc(r.q.code.split('\n').slice(0, 2).join(' ').replace(/\s+/g, ' '))}</span>` : ''}</div>
             <div class="mt-1 font-bold text-green-700">✓ ${esc(answerText(r.q))}</div>
             ${r.wrong.length ? `<div class="text-sm font-bold text-red-400">✗ ${r.wrong.map(esc).join(', ')}</div>` : ''}
           </div>`).join('')}
@@ -1478,17 +1867,6 @@ function renderModal() {
         <button data-action="modal-close" class="btn3d rounded-2xl py-3 font-extrabold bg-white border-2 border-gray-200 text-gray-600" style="--shadow:#e5e7eb">Zrušit</button>
         <button data-action="gate-submit" class="btn3d rounded-2xl py-3 font-extrabold text-white" style="background:#1cb0f6;--shadow:#1899d6">Vstoupit</button>
       </div>`);
-  }
-  if (modal.type === 'joke') {
-    const j = modal.joke;
-    return wrap(`
-      <div class="text-6xl wiggle">🎁</div>
-      <h3 class="text-sm font-extrabold uppercase tracking-wider text-purple-500 mt-2">Vtip za odměnu</h3>
-      <p class="mt-3 text-xl font-extrabold text-gray-800 leading-snug">${esc(j.q)}</p>
-      ${j.a ? (modal.revealed ? `<p class="mt-4 text-xl font-extrabold text-purple-700 leading-snug pop">${esc(j.a)} 😂</p>`
-        : `<button data-action="joke-reveal" class="btn3d mt-5 w-full rounded-2xl py-3 text-lg font-extrabold text-white" style="background:#a855f7;--shadow:#7e22ce">Prozradit pointu 😄</button>`) : ''}
-      <button data-action="joke-done" class="${j.a && !modal.revealed ? 'mt-3 w-full rounded-2xl py-3 font-extrabold text-gray-400 hover:bg-gray-50' : 'btn3d mt-5 w-full rounded-2xl py-4 text-lg font-extrabold text-white uppercase'}"
-        ${j.a && !modal.revealed ? '' : `style="background:${GREEN};--shadow:${GREEN_DARK}"`}>${j.a && !modal.revealed ? 'Přeskočit' : 'Pokračovat'}</button>`);
   }
   return '';
 }
@@ -1560,11 +1938,11 @@ function renderParent() {
   }).join('')}</tbody></table></div>` : `<p class="text-gray-400 font-bold">Zatím žádné testy.</p>`;
 
   const lengthBtns = [5, 10, 15, 20, 0].map(n => chip(n, settings.sessionLength, { action: 'set-length', text: n || 'Vše' })).join('');
-  const jokeBtns = [3, 5, 10, 0].map(n => chip(n, settings.jokeEvery, { action: 'set-jokes', text: n ? `${n} v řadě` : 'Vypnuto' })).join('');
+  const jokeBtns = [1, 0].map(n => chip(n, settings.jokes ? 1 : 0, { action: 'set-jokes', text: n ? 'Zapnuto' : 'Vypnuto' })).join('');
 
   const real = QUESTIONS.filter(q => q.type !== 'tip');
   const counts = Object.entries(SUBJECTS).map(([k, s]) => `${s.emoji} ${real.filter(q => q.subject === k).length}`).join(' · ');
-  const byType = ['abcd', 'input', 'pairs', 'order'].map(t => `${{ abcd: '🔘 výběr', input: '⌨️ psaní', pairs: '🔗 dvojice', order: '🧩 skládání' }[t]} ${real.filter(q => q.type === t).length}`).join(' · ');
+  const byType = ['abcd', 'input', 'pairs', 'order', 'fill', 'map'].map(t => `${{ abcd: '🔘 výběr', input: '⌨️ psaní', pairs: '🔗 dvojice', order: '🧩 skládání', fill: '✍️ doplňování', map: '🗺️ mapa' }[t]} ${real.filter(q => q.type === t).length}`).join(' · ');
   const fileRows = SOURCES.files.length ? SOURCES.files.map(f => `<li>${esc(f.name)}: ${f.missing ? '<span class="text-red-500">soubor nenalezen</span>' : `${f.count} položek${f.errors ? ` <span class="text-red-500">(${f.errors} chybných přeskočeno)</span>` : ''}`}</li>`).join('')
     : `<li>žádný questions.json ${/^https?:$/.test(location.protocol) ? 'nenalezen' : '(načítá se jen na webu, ne ze souboru v počítači)'}</li>`;
   const msg = parentMsg ? `<div class="mt-3 rounded-2xl px-4 py-3 font-bold ${parentMsg.type === 'ok' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-700'}">${esc(parentMsg.text)}</div>` : '';
@@ -1595,15 +1973,17 @@ function renderParent() {
       ${section('Nastavení', `
         <div class="font-bold text-gray-600 mb-2">Počet úkolů v jednom testu</div>
         <div class="flex flex-wrap gap-2">${lengthBtns}</div>
-        <div class="font-bold text-gray-600 mt-5 mb-2">🎁 Vtip za odměnu po kolika správných odpovědích v řadě</div>
+        <div class="font-bold text-gray-600 mt-5 mb-2">🎁 Vtip za odměnu</div>
         <div class="flex flex-wrap gap-2">${jokeBtns}</div>
-        <p class="text-sm text-gray-400 font-bold mt-2">Vtip přijde i na konci testu, když dítě zvládne aspoň 70 % napoprvé. Vtipy se neopakují, dokud se nevystřídají všechny (${JOKES.length}).</p>
+        <p class="text-sm text-gray-400 font-bold mt-2">Vtip se ukáže na konci bloku ${JOKE_BLOCK} a více úkolů, když dítě odpoví napoprvé správně aspoň na ${Math.round(JOKE_RATIO * 100)} % z nich (${Math.round(JOKE_BLOCK * JOKE_RATIO)} z ${JOKE_BLOCK}). Opravování chyb vtip nespouští. Vtipy se neopakují, dokud se nevystřídají všechny (${JOKES.length}). Při testu kratším než ${JOKE_BLOCK} úkolů se vtip nedává.</p>
         <p class="text-sm text-gray-400 font-bold mt-3">Pořadí úkolů: nejdřív nové z JSON sad (nejnovější první), pak naposledy chybné, pak ostatní neviděné a nakonec ty, které dítě už umí a dlouho je neopakovalo.</p>`)}
       ${section('Otázky', `
         <p class="font-bold text-gray-600">Načteno ${real.length} úkolů (${counts})</p>
         <p class="text-sm font-bold text-gray-400">${byType}</p>
         <p class="text-sm font-bold text-gray-400 mt-1">Vestavěné: ${SOURCES.builtin} · importované v tomto prohlížeči: ${SOURCES.imported} · nové neviděné: ${real.filter(isNewQ).length}</p>
         <ul class="text-sm font-bold text-gray-500 mt-1 list-disc pl-5">${fileRows}</ul>
+        ${SOURCES.maps.length ? `<p class="text-sm font-bold text-gray-500 mt-2">Mapy: ${SOURCES.maps.map(m => m.ok ? `🗺️ ${esc(m.name)}` : `<span class="text-red-500">${esc(m.name)} (nenalezena)</span>`).join(', ')}</p>` : ''}
+        ${SOURCES.warnings.length ? `<details class="mt-2 text-sm font-bold text-red-500"><summary class="cursor-pointer">${SOURCES.warnings.length} ${plural(SOURCES.warnings.length, 'úkol byl vyřazen', 'úkoly byly vyřazeny', 'úkolů bylo vyřazeno')} (chyba v mapě)</summary><ul class="list-disc pl-5 mt-1">${SOURCES.warnings.slice(0, 30).map(w => `<li>${esc(w)}</li>`).join('')}</ul></details>` : ''}
         <div class="mt-4 font-bold text-gray-600">Rychlý import (uloží se jen do tohoto prohlížeče)</div>
         <input id="importFile" type="file" accept=".json,application/json" class="mt-2 block w-full text-sm font-bold text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:font-extrabold file:bg-sky-100 file:text-sky-700">
         <textarea id="importText" rows="5" placeholder='[ { "id": "cj_99", "subject": "cj", "topic": "Vyjmenovaná slova", "type": "input", "question": "Doplň i/y: b_t", "correct": "y" } ]'
@@ -1625,8 +2005,12 @@ function renderParent() {
   "questions": [ … ],
   "jokes": [ { "q": "otázka", "a": "pointa" } ] }</pre>
             <ul class="list-disc pl-5 space-y-1">
-              <li><code>type</code>: abcd · input · pairs · order · tip (trik na zapamatování na začátku tématu)</li>
-              <li><code>pairs</code>: <code>[["bed","postel"], ["sofa","pohovka"]]</code> – 2 až 8 dvojic</li>
+              <li><code>type</code>: abcd · input · pairs · order · fill · map · tip (trik na zapamatování na začátku tématu)</li>
+              <li><code>pairs</code>: <code>[["bed","postel"], ["sofa","pohovka"]]</code> – 2 až 8 dvojic (jdou klikat i přetahovat)</li>
+              <li><code>fill</code>: <code>"text": "Vltava teče přes {{Prahu}}.", "extra": ["Brno"]</code> – slova se doplňují z nabídky</li>
+              <li><code>map</code>: <code>"map": "cr", "layer": "regions", "target": "jihocesky"</code> – slepá mapa; <code>layer</code> je regions / rivers / points</li>
+              <li>Mapu lze přidat i k <code>abcd</code>, <code>input</code>, <code>fill</code> a <code>tip</code>: <code>"map": "cr", "highlight": ["regions:jihocesky"]</code></li>
+              <li>Mapy jsou v <code>data/maps/*.json</code> (obrysy krajů, řeky, města a hory). Další mapu stačí přidat tam nebo ji dát do sady jako <code>"maps": { "nazev": { … } }</code>.</li>
               <li><code>order</code>: <code>"correct": "I sleep in my bed"</code>; písmena: <code>"joiner": ""</code>; navíc dílky: <code>"extra": ["on"]</code></li>
               <li>Otázka se stejným <code>id</code> přepíše starší verzi. <code>"replaceBuiltIn": true</code> skryje vestavěné otázky.</li>
             </ul>
@@ -1662,6 +2046,9 @@ const TEMPLATE = {
     { id: 'aj_zvirata_03', subject: 'aj', topic: 'Animals', type: 'input', emoji: '🐭', question: 'Napiš anglicky: myš', correct: 'mouse' },
     { id: 'aj_zvirata_04', subject: 'aj', topic: 'Animals', type: 'order', question: 'Slož větu: Mám psa.', correct: 'I have got a dog', extra: ['cat'] },
     { id: 'cj_novy_01', subject: 'cj', topic: 'Vyjmenovaná slova po L', type: 'order', question: 'Slož slovo z písmen:', correct: 'lyže', joiner: '', extra: ['i'] },
+    { id: 'prv_sablona_01', subject: 'prv', topic: 'Ukázka', type: 'fill', question: 'Doplň slova:', text: 'Vltava teče přes {{Prahu}} a ústí do {{Labe}}.', extra: ['Odru'] },
+    { id: 'prv_sablona_02', subject: 'prv', topic: 'Ukázka', type: 'map', map: 'cr', layer: 'regions', target: 'jihocesky', question: 'Klikni na Jihočeský kraj.' },
+    { id: 'prv_sablona_03', subject: 'prv', topic: 'Ukázka', type: 'abcd', map: 'cr', highlight: ['rivers:vltava'], show: ['rivers:labe', 'rivers:morava'], question: 'Která řeka je zvýrazněná?', options: ['Vltava', 'Labe', 'Morava'], correct: 'Vltava' },
   ],
   jokes: [{ q: 'Proč šel pes do školy?', a: 'Chtěl se naučit štěkat anglicky: woof!' }],
 };
@@ -1681,7 +2068,8 @@ async function doImport() {
   const merged = new Map(((existing && existing.questions) || []).map(q => [q.id, q]));
   p.questions.forEach(q => merged.set(q.id, Object.assign(cleanQ(q), { added: q.added || added })));
   const jokes = ((existing && existing.jokes) || []).concat((json && Array.isArray(json.jokes)) ? json.jokes : []);
-  store.set(KEY.custom, { replaceBuiltIn: p.replace || !!(existing && existing.replaceBuiltIn), questions: [...merged.values()], jokes });
+  const maps = Object.assign({}, existing && existing.maps, json && !Array.isArray(json) && json.maps);
+  store.set(KEY.custom, { replaceBuiltIn: p.replace || !!(existing && existing.replaceBuiltIn), questions: [...merged.values()], jokes, maps });
   await loadQuestions();
   parentMsg = { type: 'ok', text: `Přidáno nebo upraveno ${p.questions.length} ${plural(p.questions.length, 'položka', 'položky', 'položek')}.` + (p.errors ? ` Přeskočeno ${p.errors} (chybí id, předmět, zadání nebo správná odpověď).` : '') };
   render();
@@ -1693,13 +2081,6 @@ function gateSubmit() {
   modal = { type: 'gate', a: 11 + Math.floor(Math.random() * 39), b: 11 + Math.floor(Math.random() * 39), err: true };
   render();
 }
-function openReward() {
-  const j = nextJoke();
-  if (!j) { nextStep(); return; }
-  modal = { type: 'joke', joke: j, revealed: false };
-  render();
-}
-function jokeDone() { modal = null; nextStep(); }
 
 /* ============================================================
    UDÁLOSTI
@@ -1707,6 +2088,7 @@ function jokeDone() { modal = null; nextStep(); }
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-action]');
   if (!el || el.disabled) return;
+  if (Date.now() < suppressClick.until && el.dataset.drag === suppressClick.id) return;   // klik na přetahovaný prvek hned po puštění
   const a = el.dataset.action;
   if (a === 'modal-backdrop' && e.target !== el) return;
   unlockAudio();
@@ -1718,25 +2100,25 @@ document.addEventListener('click', e => {
     case 'option': chooseOption(Number(el.dataset.i)); break;
     case 'pair': tapPair(el.dataset.side, Number(el.dataset.pos)); break;
     case 'tile': tapTile(Number(el.dataset.id)); break;
+    case 'blank': tapSlot(Number(el.dataset.i)); break;
+    case 'bank': tapBankTile(Number(el.dataset.id)); break;
+    case 'mapclick': clickMap(el.dataset.layer, el.dataset.id); break;
     case 'check': checkAnswer(); break;
     case 'next': nextStep(); break;
-    case 'reward': openReward(); break;
-    case 'joke-reveal': modal.revealed = true; sfx.reward(); render(); break;
-    case 'joke-done': jokeDone(); break;
     case 'summary-joke': game.summaryJokeRevealed = true; sfx.reward(); render(); break;
     case 'hint': game.cur.hintShown = true; render(); break;
     case 'speak': speak(speakTextFor(curQ()), SUBJECTS[game.subject].lang); break;
     case 'quit': modal = { type: 'quit' }; render(); break;
     case 'quit-confirm': modal = null; endSession(false); setScreen('subject'); render(); break;
     case 'modal-close': modal = null; render(); break;
-    case 'modal-backdrop': if (modal && modal.type === 'joke') jokeDone(); else { modal = null; render(); } break;
+    case 'modal-backdrop': modal = null; render(); break;
     case 'retry-mistakes': startGame(game.subject, null, game.results.filter(r => !r.first).map(r => r.q)); break;
     case 'play-again': startGame(game.subject, game.topicKey, game.explicitList); break;
     case 'parent-open': modal = { type: 'gate', a: 11 + Math.floor(Math.random() * 39), b: 11 + Math.floor(Math.random() * 39) }; render(); break;
     case 'gate-submit': gateSubmit(); break;
     case 'toggle-sound': settings.sound = !settings.sound; saveSettings(); render(); if (settings.sound) sfx.correct(); break;
     case 'set-length': settings.sessionLength = Number(el.dataset.n); saveSettings(); render(); break;
-    case 'set-jokes': settings.jokeEvery = Number(el.dataset.n); saveSettings(); render(); break;
+    case 'set-jokes': settings.jokes = el.dataset.n === '1'; saveSettings(); render(); break;
     case 'import': doImport(); break;
     case 'export-questions': download('vsechny-ukoly.json', { questions: QUESTIONS.map(cleanQ), jokes: JOKES }); break;
     case 'download-template': download(`sada-${todayISO()}.json`, TEMPLATE); break;
@@ -1761,11 +2143,6 @@ document.addEventListener('input', e => {
 document.addEventListener('keydown', e => {
   if (e.repeat) return;
   if (modal) {
-    if (modal.type === 'joke') {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (modal.joke.a && !modal.revealed) { modal.revealed = true; render(); } else jokeDone(); }
-      else if (e.key === 'Escape') jokeDone();
-      return;
-    }
     if (e.key === 'Escape') { modal = null; render(); }
     else if (e.key === 'Enter' && modal.type === 'gate') { e.preventDefault(); gateSubmit(); }
     return;
@@ -1774,8 +2151,8 @@ document.addEventListener('keydown', e => {
   const q = curQ(), c = game.cur;
   if (e.key === 'Enter') {
     e.preventDefault();
-    if (c.solved) { if (c.reward) openReward(); else nextStep(); }
-    else if (q.type === 'input' || q.type === 'order') checkAnswer();
+    if (c.solved) nextStep();
+    else if (q.type === 'input' || q.type === 'order' || q.type === 'fill') checkAnswer();
     return;
   }
   if (q.type === 'abcd' && !c.solved && !e.ctrlKey && !e.metaKey && !e.altKey) {
