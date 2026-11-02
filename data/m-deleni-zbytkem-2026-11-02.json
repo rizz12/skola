@@ -1,0 +1,69 @@
+{
+ "added": "2026-11-02",
+ "questions": [
+  {"id": "m_tip_deleni_zbytkem", "subject": "m", "topic": "Dělení se zbytkem", "type": "tip", "emoji": "🍫",
+   "question": "Dělení se zbytkem – logika, ne kouzla!",
+   "text": "🍫 **Představ si bonbóny!**\nMáš **127 bonbónů** a chceš je rozdat **4 kamarádům** rovným dílem.\nKaždý dostane stejně a ty si necháš, co nepůjde rozdělit.\n\n🤯 **Logický šok:** Mohl by každý dostat 420 bonbónů? **Nikdy!** Kde by se vzaly? Máš jich přece jen 127. Při dělení výsledek zmenšujeme, nikdy neroste!\n\n---\n\n🛑 **Pomůcka 1 – Stopka pro zbytek**\nDělíme 4 kamarádům. Zbytek musí být **menší než 4**.\nPokud by zbylo 5, mohl by každý dostat ještě jeden bonbón!\nZbytek u dělení čtyřmi může být jen: **0, 1, 2, nebo 3.**\nVětší zbytek = chyba! 🚫\n\n🔄 **Pomůcka 2 – Otočka a kontrola**\nVýsledek vynásob malým číslem a přičti zbytek – musíš dostat původní číslo!\n31 · 4 = 124, a 124 + 3 = **127** ✅\n\n---\n\n✂️ **Krok za krokem: 127 : 4**\n**Krok 1:** Rozlož 127 na kousky z násobilky: **120 + 7**\n**Krok 2:** 120 : 4 = **30** (z násobilky: 12 : 4 = 3, přidej nulu)\n**Krok 3:** Zbyde nám 7. Kolikrát se 4 vejde do 7? Jen **1×**. Zbylo? **3**.\n**Krok 4:** Spoj: 30 + 1 = **31**, zbytek **3**.\n\n✅ **127 : 4 = 31 (zb. 3)**\nKontrola: 31 · 4 = 124, + 3 = 127 ✔️  |  Zbytek 3 < 4 ✔️"},
+
+  {"id": "m_dz_01", "subject": "m", "topic": "Dělení se zbytkem", "type": "abcd", "emoji": "🍫",
+   "question": "Máš 127 bonbónů a rozdělíš je 4 kamarádům. Může každý dostat 420 bonbónů?",
+   "options": ["Ne! Výsledek dělení je vždy menší než dělené číslo.", "Ano, pokud použijeme kouzlo.", "Ano, vyjde to přesně.", "Nevíme, záleží na kamarádech."],
+   "correct": "Ne! Výsledek dělení je vždy menší než dělené číslo.",
+   "explanation": "Při dělení výsledek zmenšujeme. Ze 127 bonbónů nikdy nevznikne 420!"},
+
+  {"id": "m_dz_02", "subject": "m", "topic": "Dělení se zbytkem", "type": "abcd", "emoji": "🛑",
+   "question": "Počítáme **127 : 4**. Jaký zbytek je **správně**?",
+   "options": ["3", "5", "4", "7"],
+   "correct": "3",
+   "hint": "Zbytek musí být menší než 4.",
+   "explanation": "Zbytek u dělení 4 může být jen 0, 1, 2, nebo 3. Zbytek 3 je v pořádku. 31 · 4 = 124, a 124 + 3 = 127 ✅"},
+
+  {"id": "m_dz_03", "subject": "m", "topic": "Dělení se zbytkem", "type": "abcd", "emoji": "🚦",
+   "question": "Dělíme číslem **6**. Který zbytek je **zakázaný** (nelegální)?",
+   "options": ["6", "0", "3", "5"],
+   "correct": "6",
+   "explanation": "Zbytek musí být vždy menší než dělitel. Když dělíme 6, zbytek může být jen 0–5. Zbytek 6 znamená, že jsme mohli ještě jednou rozdělit!"},
+
+  {"id": "m_dz_04", "subject": "m", "topic": "Dělení se zbytkem", "type": "input", "emoji": "✂️",
+   "question": "127 : 4 = ?\n\nKrok 1: 120 : 4 = 30\nKrok 2: 7 : 4 = 1 zb. 3\nKrok 3: 30 + 1 = ___",
+   "correct": "31",
+   "hint": "Sečti výsledky z obou kroků.",
+   "explanation": "30 + 1 = **31**, zbytek 3. Tedy 127 : 4 = 31 (zb. 3)"},
+
+  {"id": "m_dz_05", "subject": "m", "topic": "Dělení se zbytkem", "type": "input", "emoji": "🔄",
+   "question": "Proveď **otočku a kontrolu** pro 127 : 4 = 31 (zb. 3):\n31 · 4 = 124\n124 + 3 = ___",
+   "correct": "127",
+   "hint": "Přičti zbytek k součinu.",
+   "explanation": "31 · 4 = 124, plus zbytek 3 = **127** ✅ Výsledek souhlasí, příklad je správně!"},
+
+  {"id": "m_dz_06", "subject": "m", "topic": "Dělení se zbytkem", "type": "abcd", "emoji": "🍕",
+   "question": "Vypočítej: **95 : 3 = ?**",
+   "options": ["31 (zb. 2)", "30 (zb. 5)", "32 (zb. 0)", "31 (zb. 3)"],
+   "correct": "31 (zb. 2)",
+   "hint": "Rozlož: 90 : 3 = 30, zbyde 5. 5 : 3 = 1 (zb. 2). Celkem 31 (zb. 2).",
+   "explanation": "90 : 3 = 30, zbyde 5. 5 : 3 = 1 (zb. 2). Výsledek: **31 (zb. 2)**. Kontrola: 31 · 3 = 93, + 2 = 95 ✅"},
+
+  {"id": "m_dz_07", "subject": "m", "topic": "Dělení se zbytkem", "type": "abcd", "emoji": "🎯",
+   "question": "Vypočítej: **143 : 5 = ?**",
+   "options": ["28 (zb. 3)", "28 (zb. 5)", "29 (zb. 0)", "20 (zb. 43)"],
+   "correct": "28 (zb. 3)",
+   "hint": "140 : 5 = 28, zbyde 3. Zbytek 3 je menší než 5 – správně!",
+   "explanation": "140 : 5 = 28, zbyde 3. Výsledek: **28 (zb. 3)**. Kontrola: 28 · 5 = 140, + 3 = 143 ✅"},
+
+  {"id": "m_dz_08", "subject": "m", "topic": "Dělení se zbytkem", "type": "input", "emoji": "🧮",
+   "question": "Vypočítej:\n**116 : 4 = ?**\n(Napiš jen výsledek, zbytkem, např.: 29 zb. 0)",
+   "correct": ["29 zb. 0", "29 (zb. 0)", "29"],
+   "hint": "Rozlož: 100 : 4 = 25, zbyde 16. 16 : 4 = 4. Celkem 29.",
+   "explanation": "100 : 4 = 25, zbyde 16. 16 : 4 = 4 (zb. 0). Celkem **29 (zb. 0)**. Kontrola: 29 · 4 = 116 ✅"},
+
+  {"id": "m_dz_09", "subject": "m", "topic": "Dělení se zbytkem", "type": "order", "emoji": "📋",
+   "question": "Seřaď kroky výpočtu **127 : 4** ve správném pořadí:", "joiner": " → ",
+   "correct": "Rozlož: 120 + 7 → 120 : 4 = 30 → 7 : 4 = 1 zb. 3 → 30 + 1 = 31 zb. 3 → Kontrola: 31 · 4 + 3 = 127",
+   "hint": "Nejdřív rozlož číslo, pak děl každou část zvlášť, nakonec sečti a zkontroluj."},
+
+  {"id": "m_dz_10", "subject": "m", "topic": "Dělení se zbytkem", "type": "pairs", "emoji": "🔗",
+   "question": "Spoj příklad s výsledkem:",
+   "pairs": [["127 : 4", "31 (zb. 3)"], ["95 : 3", "31 (zb. 2)"], ["143 : 5", "28 (zb. 3)"], ["116 : 4", "29 (zb. 0)"]],
+   "hint": "Použij otočku a kontrolu: výsledek · dělitel + zbytek = původní číslo."}
+ ]
+}
