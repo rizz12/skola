@@ -1255,6 +1255,8 @@ function normAns(s, q) {
   let t = String(s).normalize('NFC').trim();
   if (!q.caseSensitive) t = t.toLocaleLowerCase('cs');
   t = t.replace(/[’‘`´]/g, "'").replace(/\s+/g, ' ');
+  // dělení se zbytkem: "14 zb 3", "14 zb. 3", "14zb3", "14 (zb. 3)", "14 zbytek 3" → "14 zb 3"
+  t = t.replace(/[()]/g, ' ').replace(/(\d)\s*(?:zbytek|zbývá|zb)\.?\s*(?=\d)/g, '$1 zb ').replace(/\s+/g, ' ').trim();
   if (q.unit) {
     const u = q.caseSensitive ? q.unit : q.unit.toLocaleLowerCase('cs');
     if (t.endsWith(u)) t = t.slice(0, -u.length).trim();
