@@ -643,6 +643,7 @@ const saveStats = () => store.set(KEY.stats, stats);
    ============================================================ */
 let QUESTIONS = [], JOKES = [], MAPS = {};
 let SOURCES = { builtin: 0, files: [], imported: 0, maps: [], warnings: [] };
+let parentSubject = 'all';
 let screen = 'loading', lastScreen = null, currentSubject = null, game = null, modal = null, parentMsg = null;
 const $app = document.getElementById('app');
 
@@ -1932,9 +1933,11 @@ function renderParent() {
       <td class="py-2 pl-2 text-right font-bold">${qs.filter(isMastered).length}/${qs.length}</td></tr>`;
   }).join('');
 
-  const missed = Object.entries(stats.questions).filter(([, st]) => st.fails > 0)
-    .sort((a, b) => (b[1].wrong - a[1].wrong) || (b[1].fails - a[1].fails) || ((b[1].lastFail || 0) - (a[1].lastFail || 0)))
-    .slice(0, 20);
+  const allMissed = Object.entries(stats.questions).filter(([, st]) => st.fails > 0 && (parentSubject === 'all' || st.subject === parentSubject))
+    .sort((a, b) => ((b[1].lastFail || 0) - (a[1].lastFail || 0)) || (b[1].wrong - a[1].wrong));   // nejčerstvější chyby nahoře
+  const missed = allMissed.slice(0, 30);
+  const subjChips = [['all', 'Vše'], ...Object.entries(SUBJECTS).map(([k, v]) => [k, `${v.emoji} ${v.name}`])].map(([k, label]) => `<button data-action="set-parent-subject" data-subject="${k}"
+    class="px-3 py-1.5 rounded-xl font-extrabold border-2 text-sm ${parentSubject === k ? 'bg-sky-500 border-sky-500 text-white' : 'bg-white border-gray-200 text-gray-600'}">${label}</button>`).join('');
   const missedHtml = missed.length ? `<div class="space-y-2">${missed.map(([id, st]) => {
     const q = qById.get(id), subj = SUBJECTS[st.subject] || { emoji: '❓' };
     return `<div class="rounded-2xl border-2 border-gray-100 p-3">
@@ -1942,13 +1945,13 @@ function renderParent() {
         <span>${subj.emoji}</span>
         <div class="flex-1 min-w-0">
           <div class="font-bold text-gray-800">${esc(st.q || id)}</div>
-          <div class="text-xs font-bold text-gray-400 mt-0.5">${esc(st.topic || '')} · chyb celkem ${st.wrong} · napoprvé ${st.firstTry}/${st.seen}</div>
+          <div class="text-xs font-bold text-gray-400 mt-0.5">${esc(st.topic || '')} · naposledy ${st.lastFail ? new Date(st.lastFail).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) : '–'} · chyb celkem ${st.wrong} · napoprvé ${st.firstTry}/${st.seen}</div>
           ${q ? `<div class="text-sm font-bold text-green-700 mt-1">✓ ${esc(answerText(q))}</div>` : ''}
           ${st.lastWrong && st.lastWrong.length ? `<div class="text-sm font-bold text-red-500">✗ ${st.lastWrong.map(esc).join(', ')}</div>` : ''}
         </div>
         <span class="shrink-0 text-xs font-extrabold px-2 py-1 rounded-full ${st.lastOk ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${st.lastOk ? 'už umí' : 'procvičit'}</span>
       </div></div>`;
-  }).join('')}</div>` : `<p class="text-gray-400 font-bold">Zatím žádné chyby. 🎉</p>`;
+  }).join('')}</div>${allMissed.length > missed.length ? `<p class="text-xs font-bold text-gray-400 mt-2">Zobrazeno ${missed.length} nejnovějších z ${allMissed.length}.</p>` : ''}` : `<p class="text-gray-400 font-bold">${parentSubject === 'all' ? 'Zatím žádné chyby. 🎉' : 'V tomto předmětu zatím žádné chyby. 🎉'}</p>`;
 
   const recent = sess.slice(-12).reverse();
   const recentHtml = recent.length ? `<div class="overflow-x-auto"><table class="w-full text-sm"><tbody>${recent.map(x => {
@@ -1991,7 +1994,7 @@ function renderParent() {
         <div class="mt-5 overflow-x-auto"><table class="w-full text-sm">
           <thead><tr class="text-xs uppercase tracking-wider text-gray-400"><th class="text-left py-1 pr-2">Předmět</th><th class="text-right px-2">Čas</th><th class="text-right px-2">Testy</th><th class="text-right px-2">Napoprvé</th><th class="text-right pl-2">Zvládnuto</th></tr></thead>
           <tbody>${subjRows}</tbody></table></div>`)}
-      ${section('Kde dítě nejčastěji chybuje', missedHtml)}
+      ${section('Kde dítě chybuje <span class="text-sm font-bold text-gray-400">(nejnovější nahoře)</span>', `<div class="flex flex-wrap gap-2 mb-3">${subjChips}</div>${missedHtml}`)}
       ${section('Poslední testy', recentHtml)}
       ${section('Nastavení', `
         <div class="font-bold text-gray-600 mb-2">Počet úkolů v jednom testu</div>
@@ -2140,6 +2143,7 @@ document.addEventListener('click', e => {
     case 'parent-open': modal = { type: 'gate', a: 11 + Math.floor(Math.random() * 39), b: 11 + Math.floor(Math.random() * 39) }; render(); break;
     case 'gate-submit': gateSubmit(); break;
     case 'toggle-sound': settings.sound = !settings.sound; saveSettings(); render(); if (settings.sound) sfx.correct(); break;
+    case 'set-parent-subject': parentSubject = el.dataset.subject; render(); break;
     case 'set-length': settings.sessionLength = Number(el.dataset.n); saveSettings(); render(); break;
     case 'set-jokes': settings.jokes = el.dataset.n === '1'; saveSettings(); render(); break;
     case 'import': doImport(); break;
