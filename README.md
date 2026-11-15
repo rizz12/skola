@@ -73,3 +73,4 @@ Do úkolu se přidávají polem `"imageUrl": "img/rostliny/lipa.jpg"` (a `"emoji
 | `img/rostliny/spenat.jpg` | Rasbak | CC BY-SA 3.0 | [Commons](https://commons.wikimedia.org/wiki/File:Spinacia_oleracea_Spinazie_bloeiend.jpg) |
 | `img/rostliny/lipa.jpg` | Franz Eugen Köhler, Köhler's Medizinal-Pflanzen | Public domain | [Commons](https://commons.wikimedia.org/wiki/File:Tilia_cordata_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-139.jpg) |
 | `img/rostliny/pampeliska.jpg` | Walther Otto Müller | Public domain | [Commons](https://commons.wikimedia.org/wiki/File:Taraxacum_officinale_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-135.jpg) |
+| `img/rostliny/jirovec.jpg` | Otto Wilhelm Thomé (úprava Kilom691) | Public domain | [Commons](https://commons.wikimedia.org/wiki/File:Illustration_Aesculus_hippocastanum0_clean.jpg) |
