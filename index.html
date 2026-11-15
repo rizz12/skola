@@ -1523,8 +1523,8 @@ function renderSubject() {
 function renderMedia(q, c) {
   if (q.map) return renderMapCard(q, c);
   if (q.imageUrl) {
-    return `<div class="mt-5 flex justify-center"><div class="rounded-3xl overflow-hidden border-2 border-gray-200 bg-white w-full max-w-sm aspect-[4/3] flex items-center justify-center">
-      <img src="${esc(q.imageUrl)}" alt="${esc(q.imageAlt || '')}" data-fallback="${esc(q.emoji || '🖼️')}" class="w-full h-full object-cover"></div></div>`;
+    return `<div class="mt-5 flex justify-center"><div class="rounded-3xl overflow-hidden border-2 border-gray-200 bg-white w-full max-w-sm aspect-square flex items-center justify-center">
+      <img src="${esc(q.imageUrl)}" alt="${esc(q.imageAlt || '')}" data-fallback="${esc(q.emoji || '🖼️')}" class="w-full h-full" style="object-fit:contain"></div></div>`;
   }
   if (q.emoji) return `<div class="mt-5 flex justify-center"><div class="text-7xl sm:text-8xl leading-none select-none">${esc(q.emoji)}</div></div>`;
   return '';
