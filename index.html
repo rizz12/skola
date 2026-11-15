@@ -130,8 +130,8 @@
   Mapy jsou v data/maps/*.json (kraje, řeky a body se jmény) – stačí přidat soubor a odkázat se na něj přes "map".
 
   Další pole:
-    id          – unikátní; prefix cj_/cz_, aj_/en_, m_/ma_, prv_ určí předmět, pokud chybí "subject"
-    subject     – "cj" | "aj" | "m" | "prv"
+    id          – unikátní; prefix cj_/cz_, aj_/en_, m_/ma_, prv_ (Člověk a jeho svět), prir_ (Přírodověda) určí předmět, pokud chybí "subject"
+    subject     – "cj" | "aj" | "m" | "prv" | "prir"
     topic       – název tématu (tlačítko v menu předmětu)
     question    – zadání. **tučně**, ___ = mezera k doplnění, \n = nový řádek
     hint        – nápověda (na požádání nebo po první chybě)
@@ -433,18 +433,18 @@
     "question": "Seřaď světové strany po směru hodinových ručiček, začni nahoře:", "joiner": " → ",
     "correct": "sever → východ → jih → západ", "hint": "Slon Večer Jí Zelí." },
 
-  { "id": "prv_p_01", "subject": "prv", "topic": "Příroda", "type": "abcd", "emoji": "🪨",
+  { "id": "prv_p_01", "subject": "prir", "topic": "Příroda", "type": "abcd", "emoji": "🪨",
     "question": "Co patří do **neživé** přírody?", "options": ["kámen", "strom", "houba", "žába"], "correct": "kámen",
     "explanation": "Neživá příroda: kameny, voda, vzduch, půda, světlo." },
-  { "id": "prv_p_02", "subject": "prv", "topic": "Příroda", "type": "abcd", "emoji": "🦔",
+  { "id": "prv_p_02", "subject": "prir", "topic": "Příroda", "type": "abcd", "emoji": "🦔",
     "question": "Ježek je…", "options": ["savec", "pták", "plaz", "obojživelník"], "correct": "savec",
     "explanation": "Mláďata ježka sají mateřské mléko – je to **savec**." },
-  { "id": "prv_p_03", "subject": "prv", "topic": "Příroda", "type": "input", "emoji": "🌱☀️",
+  { "id": "prv_p_03", "subject": "prir", "topic": "Příroda", "type": "input", "emoji": "🌱☀️",
     "question": "Rostliny potřebují k životu vodu, vzduch, teplo a ___.", "correct": ["světlo", "slunce", "sluníčko"],
     "hint": "Bez něj by nerostly ani na okně." },
-  { "id": "prv_p_04", "subject": "prv", "topic": "Příroda", "type": "abcd", "emoji": "🌲",
+  { "id": "prv_p_04", "subject": "prir", "topic": "Příroda", "type": "abcd", "emoji": "🌲",
     "question": "Které zvíře žije v našem lese?", "options": ["srnec", "velbloud", "lední medvěd", "klokan"], "correct": "srnec" },
-  { "id": "prv_p_05", "subject": "prv", "topic": "Příroda", "type": "pairs",
+  { "id": "prv_p_05", "subject": "prir", "topic": "Příroda", "type": "pairs",
     "question": "Spoj zvíře se skupinou:",
     "pairs": [["ježek", "savec"], ["kos", "pták"], ["ještěrka", "plaz"], ["skokan", "obojživelník"]] },
 
@@ -596,13 +596,15 @@ const SUBJECTS = {
   cj:  { name: 'Český jazyk',        emoji: '📖', color: '#ef4444', dark: '#b91c1c', lang: 'cs-CZ' },
   aj:  { name: 'Anglický jazyk',     emoji: '💂', color: '#3b82f6', dark: '#1d4ed8', lang: 'en-GB' },
   m:   { name: 'Matematika',         emoji: '🧮', color: '#f97316', dark: '#c2410c', lang: 'cs-CZ' },
-  prv: { name: 'Člověk a jeho svět', emoji: '🌍', color: '#22c55e', dark: '#15803d', lang: 'cs-CZ' },
+  prv: { name: 'Člověk a jeho svět', emoji: '🌍', color: '#a8815f', dark: '#7a5a3e', lang: 'cs-CZ' },
+  prir: { name: 'Přírodověda',      emoji: '🌳', color: '#22c55e', dark: '#15803d', lang: 'cs-CZ' },
 };
 const SUBJECT_ALIASES = {
   cj: 'cj', cz: 'cj', cs: 'cj', cesky: 'cj', cestina: 'cj', 'cesky jazyk': 'cj',
   aj: 'aj', en: 'aj', eng: 'aj', anglictina: 'aj', 'anglicky jazyk': 'aj',
   m: 'm', ma: 'm', mat: 'm', math: 'm', matematika: 'm',
   prv: 'prv', cjs: 'prv', svet: 'prv', clovek: 'prv', 'clovek a jeho svet': 'prv',
+  prir: 'prir', priroda: 'prir', prirodoveda: 'prir',
 };
 const TYPES = ['abcd', 'input', 'pairs', 'order', 'fill', 'map', 'tip'];
 const LAYERS = ['regions', 'rivers', 'points'];
